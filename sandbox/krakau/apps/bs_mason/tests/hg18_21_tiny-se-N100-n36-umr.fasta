@@ -1,0 +1,200 @@
+>read.000000000 original_strand=bottom strand=forward
+CCACCAAAATCTAAAAACATAACATTCAAAATATTC
+>read.000000001 original_strand=top strand=reverse
+AATAAATTAACCACCTAAATCATCTAATTTACCAAC
+>read.000000002 original_strand=top strand=forward
+TTTAGATTTTAGTTAGAGATGGTGGGGAAGGGGTTT
+>read.000000003 original_strand=top strand=forward
+AAGAGGGAGGAGGGTACTAATATTGAAGTTTAGGAA
+>read.000000004 original_strand=bottom strand=reverse
+GTAAATTGATAAATTGTGTTTGTTGTTTCGAAGAAG
+>read.000000005 original_strand=bottom strand=reverse
+AAATCTTAGGGTTTGAGGTAAGTTTGTTTCTTGTAT
+>read.000000006 original_strand=top strand=reverse
+TTACTTCTACTAAAGACTTAAAAAAACTATCAGCCA
+>read.000000007 original_strand=bottom strand=reverse
+TGGATCTAAAATATATTTATGGTTTGGATTAGTATT
+>read.000000008 original_strand=top strand=reverse
+AAACCGCGCACCTCCAAAAAAAAAACGCAAACAAAC
+>read.000000009 original_strand=top strand=forward
+CATTATAGTTTATCGGGGTTTTATTTCGGTGTTGGA
+>read.000000010 original_strand=bottom strand=reverse
+TTTACGAGGGATTATAAAGACACAGCTTTAGGGTAG
+>read.000000011 original_strand=bottom strand=reverse
+TTCAGTTTTTCTTAGGTTTTACGCATATTTTTTTTA
+>read.000000012 original_strand=top strand=reverse
+AATATCTCTACAAGAAAAACTGAAATCCCTACAACC
+>read.000000013 original_strand=top strand=forward
+TTTGATTTGGTTTTTTTTGTTGAGGTTTTAGTTTTT
+>read.000000014 original_strand=top strand=reverse
+AAATTCCAACTAAACATCTACTTTCCAACACTTGCC
+>read.000000015 original_strand=top strand=reverse
+CCCACTATAATAAAATTTACTATGTACCCAACCAAA
+>read.000000016 original_strand=bottom strand=reverse
+AGGATTAGGCTTTTATTTTAGTTAGTAGTAGAATTT
+>read.000000017 original_strand=top strand=forward
+ATTTTGTATTTATGAGAATAGTTTGTTGTTTATTTA
+>read.000000018 original_strand=bottom strand=reverse
+GACGTTTGATTTCATTTGGGTTCGTTTTATTCCTGG
+>read.000000019 original_strand=top strand=forward
+GCCATTATTAGAGTTTGGAAATATAATATTCAAAAT
+>read.000000020 original_strand=bottom strand=forward
+GTAACACATATTAACTCTAACAAGAAAATCAATACA
+>read.000000021 original_strand=bottom strand=reverse
+TGTATGAGTAGATAGTAAATTGTTTTTATAAATGTA
+>read.000000022 original_strand=bottom strand=reverse
+AGGTTTTACGTATATTTTTTTTAGTTGGTATTCAGG
+>read.000000023 original_strand=top strand=reverse
+AGTCCCGACTAAAGACATATTTCTATCAATCAAAAT
+>read.000000024 original_strand=bottom strand=reverse
+GTAGTAGGGGTCGTTTAGTTTTAGGTTTTTTTTGGG
+>read.000000025 original_strand=top strand=forward
+GTAGAAAGAGTAGGGAGGAGGAGGTAACGATCGGAG
+>read.000000026 original_strand=bottom strand=reverse
+GGATGTAAGTAAATATAAGTTTANTTTTGACATTTG
+>read.000000027 original_strand=top strand=forward
+TTTGGGAGGTTGAGAAGGGAGGATTGTTTCAGTTTG
+>read.000000028 original_strand=bottom strand=reverse
+ATGGTTTTTTTGAAATGTTAGTGTACGTTTTTTTTA
+>read.000000029 original_strand=top strand=reverse
+CAAAACAAAACAATAATAAACGTAAAAAAAAAAACA
+>read.000000030 original_strand=top strand=forward
+TGGAAATATAACATTTAAAATATTTATATAAAATTA
+>read.000000031 original_strand=top strand=forward
+TTAATGTTATTCATTTAGTTTTTAGGGATAGGTGGA
+>read.000000032 original_strand=bottom strand=reverse
+GATAGGGTTTTATTTTGTTGTTCAGGTTGGAGTGTG
+>read.000000033 original_strand=top strand=reverse
+ACGTCTACTACCCCAAAAAAATACTGAAAACAATTA
+>read.000000034 original_strand=bottom strand=forward
+TCTACAACATAAACCAAACCCACTCTAACTAACAAA
+>read.000000035 original_strand=top strand=forward
+GTTGTTTTATGGGGTTGTTGTTAGCTGTCCGGGGTT
+>read.000000036 original_strand=bottom strand=reverse
+AGTGTTGGTGTTTTGAGTTGGTCGTGGGGGGTTGTT
+>read.000000037 original_strand=top strand=forward
+AGTGGTTTTTTTGAGATGGGGTTTTTGGTTTTTTTT
+>read.000000038 original_strand=top strand=forward
+ATAATTAATAGATGTTAATTTTAAGATGTAGACGAG
+>read.000000039 original_strand=top strand=reverse
+TGCTAATCTTCAGCGTTCAAGAACTTTAAAATTCCG
+>read.000000040 original_strand=bottom strand=reverse
+TTTTTATATTAGGCTGCTGTTGTTATGTTTATTTGT
+>read.000000041 original_strand=bottom strand=reverse
+TTGTTTTTTGGTGTTTTGATTTCGTGTTTTGTTTTT
+>read.000000042 original_strand=bottom strand=reverse
+ACAAAGTAATTAATTTATATTTAGTTTGTTTGTTAT
+>read.000000043 original_strand=bottom strand=reverse
+TTGATTGTTTAGGGTAGACGTGTTAGTTCAGGATTA
+>read.000000044 original_strand=bottom strand=forward
+GAAAACATCAATGAAGATAGTTTAAAAAAAAACTTA
+>read.000000045 original_strand=bottom strand=forward
+ACTAAAACTCCAACCACAATAACTGAACCACTCAAA
+>read.000000046 original_strand=bottom strand=reverse
+TGGAGTAGTTTTTCGTTTTTATGGTTGTGGGAGTTG
+>read.000000047 original_strand=bottom strand=reverse
+TCAGTTTTTTTTGTGGTAGTTAGGTTTTTTTTATTA
+>read.000000048 original_strand=bottom strand=reverse
+GTTGGGTTTTGGTGGTTGAGGGTGTCGTTTATTGTA
+>read.000000049 original_strand=bottom strand=reverse
+GGCAGAGTTTTCGGGAGTTTTTCTGTGCGGCGTGGA
+>read.000000050 original_strand=bottom strand=forward
+TAAAATATAACATATATCCAAAAACAAAACACGCAA
+>read.000000051 original_strand=top strand=reverse
+AGCAAACGTAAGCCACTATACCCAACCCTTAAATAA
+>read.000000052 original_strand=bottom strand=reverse
+TATTGAAAAAAGTTTTTTAATTTTTAATGAAAAATT
+>read.000000053 original_strand=bottom strand=reverse
+GAAGTTTGTGAGTAATAATGTGAATTTGTGATTAAT
+>read.000000054 original_strand=bottom strand=reverse
+TTAATATTCGGTACAGTGCTTTGTATTAGGATGTTG
+>read.000000055 original_strand=top strand=forward
+GTAGAGAGTTGGGGGGTGGGGGGGGGGTCAGAAGAG
+>read.000000056 original_strand=top strand=reverse
+ACTAATATCTCCAACACCAAAATAAAGCCCCGATAA
+>read.000000057 original_strand=bottom strand=forward
+CACCTATCCAAGACTTACACACTAATACCCTAAACA
+>read.000000058 original_strand=bottom strand=forward
+ATCAAAACACCAAGAAACAATTATCCAGCAGTACTA
+>read.000000059 original_strand=top strand=reverse
+CTAAACACATAACCCCATGTCCTAATAATTCTCAAA
+>read.000000060 original_strand=top strand=forward
+GGGTTTTGCAGGTTGGAGGTATTTGTTTCGCTGTAG
+>read.000000061 original_strand=top strand=forward
+GTTTTTAGTGGTATATTGAGTGGATTACGATTTTTA
+>read.000000062 original_strand=top strand=reverse
+CCTATCAAAACTTACTTTAAACATAACCAGCGTCTA
+>read.000000063 original_strand=top strand=reverse
+AATATGTATCACTTTTTAATTTAAAAATCGTAAAAT
+>read.000000064 original_strand=bottom strand=forward
+TACATCCCCTCCCTGAAAATACGCGACCCTCCTCTC
+>read.000000065 original_strand=bottom strand=forward
+ACTCAACATATAATAAATTTAAAAATTACAATTCTC
+>read.000000066 original_strand=bottom strand=reverse
+TTTTTATTAGGTTTTGTTTGAATATATGGGTCTTAT
+>read.000000067 original_strand=bottom strand=reverse
+TTATTTTAGAGAGGTCGCTGTCTATTAGTGTTGGTG
+>read.000000068 original_strand=bottom strand=forward
+AAGTGAAAAAAACACCCTCAAATAAATCTACCCTAA
+>read.000000069 original_strand=bottom strand=reverse
+TTATGTTTATTTGTATGTAGGTGGTAGAGGAGGTTA
+>read.000000070 original_strand=top strand=reverse
+TAGACCTACTTAAAAATATCTTCCTCACTTCTCAAT
+>read.000000071 original_strand=top strand=forward
+GGTTTTAGATTTGTTTTGGAGGGTCATTAGATTTTA
+>read.000000072 original_strand=top strand=reverse
+CATTATACCTAAAACTCCGCACTAGCAAAAGATGCG
+>read.000000073 original_strand=top strand=reverse
+AAAATAAAACTTTGAAATTTAAAAAAAAACAAAAAC
+>read.000000074 original_strand=top strand=reverse
+TCCCTCGCTTCCATGACTATAAAAACTAAAAGAAAC
+>read.000000075 original_strand=bottom strand=forward
+TCTCACACACACAAAAACATTTAAAAATAATCAAAA
+>read.000000076 original_strand=bottom strand=reverse
+TTTGGGATTTTAATTGGGTATTTGTTTTTTAGTATT
+>read.000000077 original_strand=top strand=forward
+TTTATTTGTTTTTGATTAGGTTTATTTTCGTTATCT
+>read.000000078 original_strand=top strand=forward
+ATTTGGGAGGTTTTTGTGATATTTTTTAGATTTTAT
+>read.000000079 original_strand=bottom strand=forward
+AAAATATAACATATATCCAAAAACAAAACACGAAAT
+>read.000000080 original_strand=bottom strand=forward
+TATATATATGCAAAACTTATTTACCCCCAAATCCTA
+>read.000000081 original_strand=top strand=forward
+TCGTGATTATGTTATTATATTTTAGTTTGGATAATA
+>read.000000082 original_strand=bottom strand=reverse
+GTAGGATCATGTTGGGTTTTAGGAATTGGCTTTGGG
+>read.000000083 original_strand=bottom strand=reverse
+GTTAGTTAAAGTGGTCGGTTGATTGGAGACCGTGGT
+>read.000000084 original_strand=bottom strand=forward
+CAAATAAACANAACAACAACAGCCTAATATGAGAAC
+>read.000000085 original_strand=bottom strand=reverse
+TTTTATTAGGCTTTGTTTGAATATATGGTTTTATGT
+>read.000000086 original_strand=bottom strand=forward
+ACTCGAACCAATTCAAATAAACCCACCAATTCTCAA
+>read.000000087 original_strand=bottom strand=reverse
+TTAGTTTTGTTTATTTTTAAATGTTTTTGTGTGTGT
+>read.000000088 original_strand=bottom strand=reverse
+TTTGGAGGTGTGTTTTTTTTGAGATTATTTGCTTTT
+>read.000000089 original_strand=top strand=forward
+TTTTTTTTTCGTGGATATCAGGTTAGTGGTGTTGTT
+>read.000000090 original_strand=top strand=forward
+TGTATGTAGGTGGATATGGTAGTAGTAGCTTGATAT
+>read.000000091 original_strand=top strand=forward
+ATTGTTTGGAGNGTATATGGAGGGAACAGAGGCGGT
+>read.000000092 original_strand=top strand=reverse
+CATCCAAAAAAACAAAAAAAACCAGAAACCCCATCT
+>read.000000093 original_strand=top strand=reverse
+AAACTTTAAAGTTCCGTCTCCACACCTCTTCTAACC
+>read.000000094 original_strand=top strand=forward
+GTTTTTTTTTGGAGAAGGGGAGAGTTTAGGGCGTTT
+>read.000000095 original_strand=bottom strand=reverse
+ATCGTTATTTTTTTTTTTTTTTTTTTTTATTTAATA
+>read.000000096 original_strand=top strand=forward
+ATTAAAATATAATATGTGTTTAAAGATAGGGTATGA
+>read.000000097 original_strand=top strand=forward
+GTAGGTGGATATGGTAGCAGTAGTTTGATATGGGGG
+>read.000000098 original_strand=top strand=forward
+GAATTTAAAAATTATAATTTTCGAGGAAAAGATAAT
+>read.000000099 original_strand=top strand=forward
+AATTATTTAATATATAGTGAATTTAAAAATTATAAT
