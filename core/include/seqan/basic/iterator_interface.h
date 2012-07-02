@@ -505,7 +505,7 @@ atBegin(T const & it)
 ...concept:Concept.RootedIteratorConcept
 ..param.container:Container of $iterator$.
 ...remarks.text:If $iterator$ implements @Concept.RootedIteratorConcept@ then $container$ is optional.
-....text:$container$ is also optional for iterators to @Adaption.char array.char arrays@.
+....DISABLED.text:$container$ is also optional for iterators to @Adaption.char array.char arrays@.
 ....text:Otherwise, $container$ is required.
 ..returns:$true$ if $iterator$ points behind the last item of the container, otherwise $false$.
 ..see:Function.atBegin
@@ -793,7 +793,6 @@ difference(TIterator const & begin,
 ..summary:Moves iterator to nil position.
 ..signature:goNil(iterator)
 ..param.iterator:The iterator that will be moved.
-...type:Class.String
 ..remarks:$iterator$ is set to an invalid position, e.g. $NULL$ for pointer types.
 ..see:Function.clear
 ..include:seqan/basic.h
@@ -825,7 +824,6 @@ goNil(TIterator * & me)
 ..summary:Tests whether iterator is at nil position.
 ..signature:bool atNil(iterator)
 ..param.iterator:An iterator.
-...type:Class.String
 ..returns:$true$ if $iterator$ points to an ivalid position, e.g. $iterator$ is a $NULL$ pointer.
 $false$ otherwise.
 ..see:Function.goNil

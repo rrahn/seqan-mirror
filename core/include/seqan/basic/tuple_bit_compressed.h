@@ -57,10 +57,10 @@ namespace seqan {
 ..signature:Tuple<T, SIZE, Compressed>
 ..param.T:The value type, that is the type of characters stored in the tuple.
 ..param.SIZE:The size/length of the tuple.
-...remarks:In contrast to @Class.String@ the length of Tuple is fixed.
+...remarks:In contrast to strings, the size of a tuple is fixed.
 ..notes:The characters are stored as a bit sequence in an ordinal type (char, ..., __int64).
 ..remarks:Only useful for small alphabets and small tuple sizes (|Sigma|^size <= 2^64) as for @Spec.Dna@ or @Spec.AminoAcid@ m-grams)
-..see:Spec.Sampler
+..DISABLED.see:Spec.Sampler
 ..include:seqan/basic.h
  */
 

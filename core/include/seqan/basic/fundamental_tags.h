@@ -258,7 +258,7 @@ struct TagSelector< TagList<TTag, TSubList> >
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.DotDrawing
+.DISABLED.Tag.DotDrawing
 ..cat:Input/Output
 ..summary:Switch to trigger drawing in dot format.
 ..value.DotDrawing:Graphs in dot format.
@@ -279,7 +279,7 @@ typedef Tag<DotDrawing_> DotDrawing;
 */
 
 /**
-.Tag.LevenshteinDistance
+.DISABLED.Tag.LevenshteinDistance
 ..cat:Basic
 ..summary:Switch to trigger Levenshtein distance, which is a measure of edit operations (character substitutions, deletions or insertions).
 ..remarks:$EditDistance$ is a synonym for $LevenshteinDistance$.
@@ -304,16 +304,16 @@ typedef Tag<LevenshteinDistance_>   EditDistance;
 //alignment algorithmen in graph/ gelandet sind...
 
 /**
-.Tag.Global Alignment Algorithms:
+.DISABLED.Tag.Global Alignment Algorithms:
 ..cat:Alignments
 ..summary:Global alignment algorithm used by globalAlignment.
-..see:Function.globalAlignment
+..DISABLED.see:Function.globalAlignment
 ..see:Tag.Local Alignment Algorithms
 ..include:seqan/basic.h
 */
 
 /**
-.Tag.Global Alignment Algorithms.value.NeedlemanWunsch:
+.DISABLED.Tag.Global Alignment Algorithms.value.NeedlemanWunsch:
     Dynamic programming algorithm for alignments by Needleman and Wunsch.
 ..include:seqan/basic.h
 */
@@ -328,7 +328,7 @@ typedef Tag<NeedlemanWunsch_> NeedlemanWunsch;
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.Global Alignment Algorithms.value.BandedNeedlemanWunsch:
+.DISABLED.Tag.Global Alignment Algorithms.value.BandedNeedlemanWunsch:
     The Needleman-Wunsch alignment algorithm in a banded version.
 ..include:seqan/basic.h
 */
@@ -342,7 +342,7 @@ typedef Tag<BandedNeedlemanWunsch_> BandedNeedlemanWunsch;
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.Global Alignment Algorithms.value.Gotoh:
+.DISABLED.Tag.Global Alignment Algorithms.value.Gotoh:
     Gotoh's affine gap cost alignment algorithm.
 ..include:seqan/basic.h
 */
@@ -356,7 +356,7 @@ typedef Tag<Gotoh_> Gotoh;
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.Global Alignment Algorithms.value.BandedGotoh:
+.DISABLED.Tag.Global Alignment Algorithms.value.BandedGotoh:
     Gotoh's affine gap cost alignment algorithm in a banded version.
 ..include:seqan/basic.h
 */
@@ -370,7 +370,7 @@ typedef Tag<BandedGotoh_> BandedGotoh;
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.Global Alignment Algorithms.value.MyersBitVector:
+.DISABLED.Tag.Global Alignment Algorithms.value.MyersBitVector:
     Myers' bit vector alignment algorithm for edit distance.
     Note that this algorithm does not returns the alignment itself, but only computes the score.
 ..include:seqan/basic.h
@@ -385,7 +385,7 @@ typedef Tag<MyersBitVector_> MyersBitVector;
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.Global Alignment Algorithms.value.MyersHirschberg:
+.DISABLED.Tag.Global Alignment Algorithms.value.MyersHirschberg:
     Myers' bit vector algorithm for edit distance combined with Hirschberg's linear space alignment algorithm.
 ..include:seqan/basic.h
 */
@@ -401,7 +401,7 @@ typedef Tag<MyersHirschberg_> MyersHirschberg;
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.Global Alignment Algorithms.value.Hirschberg:
+.DISABLED.Tag.Global Alignment Algorithms.value.Hirschberg:
     Hirschberg's linear space global alignment algorithm.
 ..include:seqan/basic.h
 */
@@ -415,7 +415,7 @@ typedef Tag<Hirschberg_> Hirschberg;
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.Global Alignment Algorithms.value.Lcs:
+.DISABLED.Tag.Global Alignment Algorithms.value.Lcs:
     Longest common subsequence algorithm.
 ..include:seqan/basic.h
 */
@@ -429,7 +429,7 @@ typedef Tag<Lcs_> Lcs;
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.Local Alignment Algorithms:
+.DISABLED.Tag.Local Alignment Algorithms:
 ..cat:Alignments
 ..summary:Local alignment algorithm used by localAlignment.
 ..see:Function.localAlignment
@@ -465,9 +465,9 @@ typedef Tag<BandedSmithWaterman_> BandedSmithWaterman;
 // TODO(holtgrew): Should probably not be defined here.
 
 /**
-.Tag.Local Alignment Algorithms.value.WatermanEggert:
+.DISABLED.Tag.Local Alignment Algorithms.value.WatermanEggert:
     Local alignment algorithm by Waterman and Eggert with "declumping" (i.e. only non-overlapping local alignments are computed).
-.Tag.Local Alignment Algorithms.value.SmithWatermanClump:
+.DISABLED.Tag.Local Alignment Algorithms.value.SmithWatermanClump:
     Same as $WatermanEggert$.
 ..include:seqan/basic.h
 */

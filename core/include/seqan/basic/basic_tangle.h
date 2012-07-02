@@ -104,7 +104,7 @@ struct Cargo<Pair<TKey, TCargo, TSpec> >
 // ----------------------------------------------------------------------------
 
 /**
-.Function.assignQualities
+.DISABLED.Function.assignQualities
 ..cat:Alphabets
 ..summary:Assign quality values between strings.
 ..signature:assignQualities(target, source)

@@ -88,15 +88,8 @@ struct HasMoveConstructor
 ..summary:Assigns one object to another object.
 ..cat:Content Manipulation
 ..signature:assign(target, source)
-..signature:assign(target, source [, limit] [,resize_tag])
 ..param.target: Gets the content of $source$.
 ..param.source: Is copied to $target$.
-..param.limit: The maximal length of $target$ after the operation. (optional)
-...remarks:This arguments can be applied if $target$ is a container.
-..param.resize_tag: Specifies the strategy that is applied if $target$ has not enough capacity to store the complete content. (optional)
-...type:Tag.Overflow Strategy
-...default:Specified by @Metafunction.DefaultOverflowImplicit@ of the $target$ type.
-...remarks:This arguments can be applied if $target$ is a container.
 ..remarks:$assign(target, source)$ is semantically equivalent to $target = source$.
 ..include:seqan/basic.h
 */

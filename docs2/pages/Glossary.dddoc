@@ -43,23 +43,23 @@
 
 
 ..Index:A data structure for faster searching in sequences.
-...see:Class.Index
+...DISABLED.see:Class.Index
 
 
 ..Trie:A tree shaped automaton.
-...see:Spec.Trie
+...DISABLED.see:Spec.Trie
 
 
 ..Alignment:An arrangement of two or more sequences: Each character is connected to at most one character for each other sequence,
 and that the characters in each sequence are ordered in the same way as the connected characters in other sequences.
-...see:Class.Align
-...see:Spec.Alignment Graph
+...DISABLED.see:Class.Align
+...DISABLED.see:Spec.Alignment Graph
 
 
 ..Scoring Scheme:A rule for calculating the similarity between two values or between a value and a @glos:Blank|blank@.
-...text:@glos:Scoring Scheme|Scoring schemes@ are used for searching and aligning. In SeqAn, @glos:Scoring Scheme|scoring schemes@ are stored in @Class.Score|score objects@, 
-e.g. @Spec.Simple Score@ or @Shortcut.Pam120@.
-...see:Class.Score
+...text:@glos:Scoring Scheme|Scoring schemes@ are used for searching and aligning. In SeqAn, @glos:Scoring Scheme|scoring schemes@ are stored in Class.Score|score objects, 
+e.g. Spec.Simple Score or Shortcut.Pam120.
+...DISABLED.see:Class.Score
 
 
 ..Affine Gap Costs:A scoring scheme that defines the score for a gap of length $n$ as $gap_open + (n-1)* gap_extend$.

@@ -228,7 +228,7 @@ struct Reference<Iter<TContainer const, StdIteratorAdaptor> >
 ..cat:Sequences
 ..summary:Returns type of the STL container iterator.
 ..signature:StdContainerIterator<T>::Type
-..param.T.type:Adaption.std::list
+..DISABLED.param.T.type:Adaption.std::list
 ..include:seqan/sequence.h
 ..remarks:This is used in @Spec.STD Adaptor Iterator@.
  */

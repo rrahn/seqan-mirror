@@ -373,6 +373,8 @@ class TplDocsCreator(object):
             ##     continue  # Skip if not in globals.indexes.
             ## print 'cat =', cat
             subcat_nodes = []
+            if not index.get(cat):
+                continue  # Skip if not found.
             for subcat in sorted(index[cat].keys()):
                 if type(index[cat][subcat]) is core.DddocTreeNode:
                     node = index[cat][subcat]

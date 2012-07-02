@@ -772,13 +772,13 @@ create(Holder<TValue, Tristate> & me,
 ..signature:detach(object)
 ..param.object:An object.
 ...type:Class.Holder
-..remarks:
+..DISABLED.remarks:
 After this function, $object$ does not depends from any other entity outside of $object$,
 like a @Function.source@ or a @Function.host@, and @Function.dependent.dependent(object)@ returns $false$ 
-..see:Function.source
+..DISABLED.see:Function.source
 ..see:Function.host
-..see:Function.createSource
-..see:Function.create
+..DISABLED.see:Function.createSource
+..DISABLED.see:Function.create
 ..include:seqan/basic.h
 */
 

@@ -57,7 +57,7 @@ namespace seqan {
 ..signature:Tuple<T, SIZE[, TSpec]>
 ..param.T:The value type, that is the type of characters stored in the tuple.
 ..param.SIZE:The size/length of the tuple.
-...remarks:In contrast to @Class.String@ the length of Tuple is fixed.
+...remarks:In contrast to strings, the length of a tuple is fixed.
 ..param.TSpec:The specializing type.
 ...default:$void$, no compression (faster access).
 ..include:seqan/basic.h

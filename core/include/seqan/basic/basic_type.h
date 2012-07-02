@@ -529,7 +529,7 @@ struct LENGTH<T const>:
 };
 
 /**
-.Metafunction.WEIGHT:
+.DISABLED.Metafunction.WEIGHT:
 ..cat:Index
 ..summary:Number of relevant positions in a shape.
 ..signature:WEIGHT<T>::Type

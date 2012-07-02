@@ -129,7 +129,7 @@ struct IsSimple<T const> : public IsSimple<T> {};
 
 // TODO(holtgrew): This should probably to into sequence module along with this header.
 
-///.Metafunction.Value.param.T.type:Adaption.char array
+///.DISABLED.Metafunction.Value.param.T.type:Adaption.char array
 
 template <typename TValue>
 struct Value<TValue *>
@@ -166,7 +166,7 @@ struct Value<TValue const [SIZE]>
 
 // TODO(holtgrew): This should probably to into sequence module along with this header.
 
-///.Metafunction.Reference.param.T.type:Adaption.char array
+///.DISABLED.Metafunction.Reference.param.T.type:Adaption.char array
 
 template <typename TValue>
 struct Reference<TValue *>

@@ -170,7 +170,6 @@ struct Difference;
 ..signature:Position<T>::Type
 ..param.T:Type for which the position type is determined.
 ...type:Class.Iter
-...type:Class.String
 ..returns.param.Type:Position type of $T$.
 ..see:Metafunction.Iterator
 ..include:seqan/basic.h
