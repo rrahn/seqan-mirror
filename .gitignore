@@ -1,0 +1,6 @@
+*~
+
+*.pyc
+
+docs2/html
+docs2/*.bin
