@@ -131,6 +131,69 @@ template <>
 struct Eval<true> : True {};
 
 // ----------------------------------------------------------------------------
+// Metafunction Not
+// ----------------------------------------------------------------------------
+
+/**
+.Metafunction.Not
+..cat:Metaprogramming
+..summary:Metaprogramming boolean "not" operator.
+..signature:Not<B>::Type
+..param.B:Argument to invert.
+...type:Tag.Logical Values.tag.True
+...type:Tag.Logical Values.tag.False
+..param.B2:Right-hand argument.
+...type:Tag.Logical Values.tag.True
+...type:Tag.Logical Values.tag.False
+..returns:One of @Tag.Logical Values.tag.True@ and @Tag.Logical Values.tag.False@, the result of logical not.
+The arguments $B$ can either be @Tag.Logical Values.tag.True@/@Tag.Logical Values.tag.False@
+or boolean metafunctions that return @Tag.Logical Values.tag.True@/@Tag.Logical Values.tag.False@.
+..example.code:
+Not<False>::Type
+Not<True>::Type
+..include:seqan/basic.h
+*/
+
+template <typename TBool1>
+struct Not : Not<typename TBool1::Type> {}; 
+
+template <>
+struct Not<False> : True {};
+template <>
+struct Not<True> : False {};
+
+// ----------------------------------------------------------------------------
+// Metafunction NotC
+// ----------------------------------------------------------------------------
+
+/**
+.Metafunction.NotC
+..cat:Metaprogramming
+..summary:Metaprogramming boolean "not" operator, value variant.
+..signature:NotC<B>::Type
+..param.B:Argument
+...type:nolink:$bool$
+..returns:$!B1$.
+..example.code:
+NotC<false, true>::Type
+NotC<false, false>::VALUE
+NotC<AndC<false, true>::VALUE, false>::Type
+NotC<AndC<false, true>, true>::Type
+..see:Metafunction.Or
+..see:Metafunction.And
+..see:Metafunction.AndC
+..include:seqan/basic.h
+*/
+
+template <bool B>
+struct NotC;
+
+template <>
+struct NotC<false> : True {};
+template <>
+struct NotC<true> : False {};
+
+// ----------------------------------------------------------------------------
 // Metafunction Or
 // ----------------------------------------------------------------------------
 

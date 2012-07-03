@@ -402,17 +402,15 @@ reAlign(FragmentStore<TFragSpec, TConfig>& fragStore,
         //}
 		if (!singleton) {
 			if (rmethod == 0)
-                globalAlignment(matches, pairSet, consScore, AlignConfig<true,false,false,true>(), _max(leftDiag - increaseBandLeft, -1 * (int) length(pairSet[1])), _min(rightDiag + increaseBandRight, (int) length(pairSet[0])), BandedNeedlemanWunsch());
-                // globalAlignment(matches, pairSet, consScore, AlignConfig<true,false,false,true>(), _max(leftDiag - increaseBand, -1 * (int) length(pairSet[1])), _min(rightDiag + increaseBand, (int) length(pairSet[0])), BandedNeedlemanWunsch());
+                globalAlignment(matches, pairSet, consScore, AlignConfig<true,false,false,true>(), _max(leftDiag - increaseBandLeft, -1 * (int) length(pairSet[1])), _min(rightDiag + increaseBandRight, (int) length(pairSet[0])), NeedlemanWunsch());
 			else if (rmethod == 1)
-                globalAlignment(matches, pairSet, consScore, AlignConfig<true,false,false,true>(), _max(leftDiag - increaseBandLeft, -1 * (int) length(pairSet[1])), _min(rightDiag + increaseBandRight, (int) length(pairSet[0])), BandedGotoh());
-                // globalAlignment(matches, pairSet, consScore, AlignConfig<true,false,false,true>(), _max(leftDiag - increaseBand, -1 * (int) length(pairSet[1])), _min(rightDiag + increaseBand, (int) length(pairSet[0])), BandedGotoh());
+                globalAlignment(matches, pairSet, consScore, AlignConfig<true,false,false,true>(), _max(leftDiag - increaseBandLeft, -1 * (int) length(pairSet[1])), _min(rightDiag + increaseBandRight, (int) length(pairSet[0])), Gotoh());
 		}
         double tEndAlign = sysTime();
 
 		//// Debug code
 		//Graph<Alignment<TStringSet, void, WithoutEdgeId> > g1(pairSet);
-		//int sc1 = globalAlignment(g1, consScore, AlignConfig<true,false,false,true>(), _max(leftDiag - increaseBand, -1 * (int) length(pairSet[1])), _min(rightDiag + increaseBand, (int) length(pairSet[0])), BandedGotoh());
+		//int sc1 = globalAlignment(g1, consScore, AlignConfig<true,false,false,true>(), _max(leftDiag - increaseBand, -1 * (int) length(pairSet[1])), _min(rightDiag + increaseBand, (int) length(pairSet[0])), Gotoh());
 		//std::cout << sc1 << std::endl;
 		//std::cout << g1 << std::endl;
 		

@@ -63,6 +63,10 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
 		SEQAN_ASSERT(samFile);
 		read(samFile, store, Sam());
 	}
+
+    AlignedReadLayout layout;
+    layoutAlignment(layout, store);
+    printAlignment(std::cout, Raw(), layout, store, 1, 0, 1000, 0, 100);
 	
 	// 3. WRITE SAM ALIGNMENTS
     strcpy(buffer, SEQAN_TEMP_FILENAME());

@@ -77,14 +77,15 @@ int main(int argc, char **argv) {
     //
     // First, setup the book-keeping objects.
     Align<TSequenceType> ali;
-    appendValue(rows(ali), seq1);
-    appendValue(rows(ali), seq2);
+    resize(rows(ali), 2);
+    assignSource(row(ali, 0), seq1);
+    assignSource(row(ali, 1), seq2);
     Score<int> scoring;//(0, -1, -1);
 
     // Then, find the best local alignment.
     // TODO(holtgrew): Score always seems to be 0.
     {
-        int scoreValue = localAlignment(ali, scoring, SmithWaterman());
+        int scoreValue = localAlignment(ali, scoring);
         std::cout << "Local alignment with score " << scoreValue << std::endl;
         std::cout << ali << std::endl;
     }

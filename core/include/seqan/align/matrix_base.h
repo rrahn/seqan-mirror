@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2010, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,9 +29,9 @@
 // DAMAGE.
 //
 // ==========================================================================
-//  Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
+// Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 // ==========================================================================
-//  Simple matrices;  Used in many alignment algorithms.
+// Simple matrices;  Used in many alignment algorithms.
 // ==========================================================================
 
 #ifndef SEQAN_HEADER_MATRIX_BASE_H

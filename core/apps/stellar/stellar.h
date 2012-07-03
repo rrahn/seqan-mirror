@@ -175,12 +175,12 @@ SEQAN_CHECKPOINT
     
     // initialization
     String<TMerger> queue;
-    TPos pos = _min(toViewPosition(row(align, 0), clippedBeginPosition(row(align, 0))),
-                    toViewPosition(row(align, 1), clippedBeginPosition(row(align, 1))));
+    TPos pos = _min(toViewPosition(row(align, 0), beginPosition(row(align, 0))),
+                    toViewPosition(row(align, 1), beginPosition(row(align, 1))));
     appendValue(queue, TMerger(pos, pos, minValue<TScoreValue1>()+1));
 
-    TPos aliLength = _max(toViewPosition(row(align, 0), clippedEndPosition(row(align, 0))),
-                          toViewPosition(row(align, 1), clippedEndPosition(row(align, 1))));
+    TPos aliLength = _max(toViewPosition(row(align, 0), endPosition(row(align, 0))),
+                          toViewPosition(row(align, 1), endPosition(row(align, 1))));
     TPos len;
     while ((pos < aliLength) || (length(queue) > 1)) {
         // construct useful tree
@@ -197,16 +197,26 @@ SEQAN_CHECKPOINT
             if (value(queue, 1).i3 >= minScore) {
 				// create new sub-alignment
                 TAlign ali(align);
-                TPos begin0 = toSourcePosition(row(ali, 0), value(queue, 1).i1);
-                TPos begin1 = toSourcePosition(row(ali, 1), value(queue, 1).i1);
-                TPos end0 = toSourcePosition(row(ali, 0), value(queue, 1).i2);
-                TPos end1 = toSourcePosition(row(ali, 1), value(queue, 1).i2);
-                setClippedBeginPosition(row(ali, 0), begin0);
-                setClippedBeginPosition(row(ali, 1), begin1);
-				setBeginPosition(row(ali, 0), 0);
-				setBeginPosition(row(ali, 1), 0);
-                setClippedEndPosition(row(ali, 0), end0);
-                setClippedEndPosition(row(ali, 1), end1);
+                // std::cerr << "SEQ0 " << source(row(ali, 0)) << "\n";
+                // std::cerr << "SEQ1 " << source(row(ali, 1)) << "\n";
+                // std::cerr << "ROW0\n" << row(ali, 0) << "\nqueue[1].i1 == " << queue[1].i1 << ", queue[1].i2 == " << queue[1].i2 << "\n";
+                // std::cerr << "ROW1\n" << row(ali, 1) << "\nqueue[1].i1 == " << queue[1].i1 << ", queue[1].i2 == " << queue[1].i2 <<
+                        // "\n";
+                setClippedBeginPosition(row(ali, 0), queue[1].i1 + clippedBeginPosition(row(align, 0)));
+                setClippedBeginPosition(row(ali, 1), queue[1].i1 + clippedBeginPosition(row(align, 1)));
+                setClippedEndPosition(row(ali, 0), queue[1].i2 + clippedBeginPosition(row(align, 0)));
+                setClippedEndPosition(row(ali, 1), queue[1].i2 + clippedBeginPosition(row(align, 1)));
+
+                // TPos begin0 = toSourcePosition(row(ali, 0), value(queue, 1).i1);
+                // TPos begin1 = toSourcePosition(row(ali, 1), value(queue, 1).i1);
+                // TPos end0 = toSourcePosition(row(ali, 0), value(queue, 1).i2);
+                // TPos end1 = toSourcePosition(row(ali, 1), value(queue, 1).i2);
+                // setClippedBeginPosition(row(ali, 0), begin0);
+                // setClippedBeginPosition(row(ali, 1), begin1);
+				// setBeginPosition(row(ali, 0), 0);
+				// setBeginPosition(row(ali, 1), 0);
+                // setClippedEndPosition(row(ali, 0), end0);
+                // setClippedEndPosition(row(ali, 1), end1);
 
                 // append sub-alignment
                 appendValue(alignmentString, ali);
@@ -355,6 +365,8 @@ SEQAN_CHECKPOINT
 
 	appendValue(queryMatches.matches, match);
 
+    // std::cerr << "Inserting match \n-------------\n" << match.row1 <<"\n" << match.row2 << "----------------\n";
+
 	if (length(queryMatches.matches) > disableThresh) {
 		queryMatches.disabled = true;
 		clear(queryMatches.matches);
@@ -412,10 +424,7 @@ SEQAN_CHECKPOINT
     resize(rows(bandedAlign), 2);
     assignSource(row(bandedAlign, 0), a);
     assignSource(row(bandedAlign, 1), b);
-	StringSet<TSegment> str;
-	appendValue(str, a);
-	appendValue(str, b);
-	globalAlignment(bandedAlign, str, scoreMatrix, lowerDiag, upperDiag, BandedNeedlemanWunsch());
+	globalAlignment(bandedAlign, scoreMatrix, lowerDiag, upperDiag, NeedlemanWunsch());
 
 	longestEpsMatch(bandedAlign, minLength, eps);
 
@@ -426,7 +435,9 @@ SEQAN_CHECKPOINT
 	setSource(row(align, 1), host(host(b)));
 	integrateAlign(align, bandedAlign);
 
+    // TODO(holtgrew): The following has not been adapted to the new clipping interface yet!
 	// set begin and end positions of align
+    SEQAN_FAIL("TODO(bkehr): Adapt to new clipping interface!");
 	setClippedBeginPosition(row(align, 0), beginPosition(a) + clippedBeginPosition(row(bandedAlign, 0)));
 	setClippedBeginPosition(row(align, 1), beginPosition(b) + beginPosition(host(b)) + clippedBeginPosition(row(bandedAlign, 1)));
 	setBeginPosition(row(align, 0), 0);
@@ -482,10 +493,7 @@ SEQAN_CHECKPOINT
     resize(rows(bandedAlign), 2);
     assignSource(row(bandedAlign, 0), a);
     assignSource(row(bandedAlign, 1), b);
-	StringSet<TSegment> str;
-	appendValue(str, a);
-	appendValue(str, b);
-	globalAlignment(bandedAlign, str, scoreMatrix, lowerDiag, upperDiag, BandedNeedlemanWunsch());
+	globalAlignment(bandedAlign, scoreMatrix, lowerDiag, upperDiag, NeedlemanWunsch());
 
 	// create alignment object for the complete sequences
 	TAlign align;
@@ -561,13 +569,16 @@ SEQAN_CHECKPOINT
 		lowerDiag = -(__int64)delta;
 
 	// banded local alignment
-    LocalAlignmentFinder<> finder = LocalAlignmentFinder<>();
+    LocalAlignmentEnumerator<Score<TScore>, Banded> enumerator(scoreMatrix, lowerDiag, upperDiag, minScore);
 	Align<TSegment> localAlign;
     resize(rows(localAlign), 2);
     assignSource(row(localAlign, 0), a);
     assignSource(row(localAlign, 1), b);
 
-	while (localAlignment(localAlign, finder, scoreMatrix, minScore, lowerDiag, upperDiag, BandedWatermanEggert())) {
+    while (nextLocalAlignment(localAlign, enumerator)) {
+	// while (localAlignment(localAlign, finder, scoreMatrix, minScore, lowerDiag, upperDiag, BandedWatermanEggert())) {
+
+        // std::cerr << "localAlign == \n" << localAlign << "\n";
 
         // split local alignments containing an X-drop
         String<Align<TSegment> > seedAlignments;
@@ -575,6 +586,7 @@ SEQAN_CHECKPOINT
 
         typename Iterator<String<Align<TSegment> > >::Type aliIt = begin(seedAlignments);
         while (aliIt != end(seedAlignments)) {
+            // std::cerr << "aliIt == \n" << row(*aliIt, 0) << "\n" << row(*aliIt, 1) << "\n";
 			// create alignment object for the complete sequences
 			TAlign align;
 			resize(rows(align), 2);
@@ -596,6 +608,7 @@ SEQAN_CHECKPOINT
 
             // insert eps-match in matches string
 			StellarMatch<TSource, TId> m(align, databaseId, dbStrand);
+      length(m);  // DEBUG: Contains assertion on clipping.
             if(!_insertMatch(matches, m, minLength, disableThresh, compactThresh, numMatches)) return;
             ++aliIt;
         }

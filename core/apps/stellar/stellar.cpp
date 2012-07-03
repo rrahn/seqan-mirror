@@ -21,8 +21,6 @@
 // Author: Birte Kehr <birte.kehr@fu-berlin.de>
 // ==========================================================================
 
-#define SEQAN_PROFILE
-
 #include <seqan/index.h>
 #include <seqan/misc/misc_cmdparser.h>
 #include "stellar.h"
@@ -43,7 +41,7 @@ _stellarOnOne(TSequence & database,
 			  StellarOptions & options) {
 	std::cout << "  " << databaseID;
 	if (!databaseStrand) std::cout << ", complement";
-  std::cout << std::flush;
+    std::cout << std::flush;
 
 	// finder
     typedef Finder<TSequence, Swift<SwiftLocal> > TFinder;

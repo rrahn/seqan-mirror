@@ -63,20 +63,6 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_tags_tags)
     SEQAN_TAG_INSTANCE_TEST(HammingDistance);
     SEQAN_TAG_INSTANCE_TEST(LevenshteinDistance);
     SEQAN_TAG_INSTANCE_TEST(EditDistance);
-    SEQAN_TAG_INSTANCE_TEST(NeedlemanWunsch);
-    SEQAN_TAG_INSTANCE_TEST(BandedNeedlemanWunsch);
-    SEQAN_TAG_INSTANCE_TEST(Gotoh);
-    SEQAN_TAG_INSTANCE_TEST(BandedGotoh);
-    SEQAN_TAG_INSTANCE_TEST(MyersBitVector);
-    SEQAN_TAG_INSTANCE_TEST(MyersHirschberg);
-    SEQAN_TAG_INSTANCE_TEST(Hirschberg);
-    SEQAN_TAG_INSTANCE_TEST(Lcs);
-    SEQAN_TAG_INSTANCE_TEST(SmithWaterman);
-    SEQAN_TAG_INSTANCE_TEST(BandedSmithWaterman);
-    SEQAN_TAG_INSTANCE_TEST(SmithWatermanClump);
-    SEQAN_TAG_INSTANCE_TEST(WatermanEggert);
-    SEQAN_TAG_INSTANCE_TEST(BandedSmithWatermanClump);
-    SEQAN_TAG_INSTANCE_TEST(BandedWatermanEggert);
     SEQAN_TAG_INSTANCE_TEST(Blat);
 
 #undef SEQAN_TAG_INSTANCE_TEST

@@ -94,9 +94,343 @@ typedef Tag<KmerLibrary_> const KmerLibrary;
 struct LcsLibrary_;
 typedef Tag<LcsLibrary_> const LcsLibrary;
 
+// ---------------------------------------------------------------------------
+// BEGIN OF TO BE REMOVED LEGACY CODE
+// ---------------------------------------------------------------------------
 
+// TODO(holtgrew): Reproduction from old graph_align module. This should go away once we can compute and enumerate local matches into Fragment strings.
 
+struct SmithWatermanClump_;
+typedef Tag<SmithWatermanClump_> SmithWatermanClump;
 
+template <typename TAlign, typename TStringSet, typename TTrace, typename TVal, typename TIndexPair, typename TForbidden>
+inline void
+_alignSmithWatermanTrace(TAlign& align,
+							TStringSet const& str,
+							TTrace const& trace,
+							TVal const initialDir,
+							TIndexPair const& indexPair,
+							TForbidden& forbidden)
+{
+	SEQAN_CHECKPOINT
+	typedef typename Size<TTrace>::Type TSize;
+	typedef typename Value<TTrace>::Type TTraceValue;
+	typedef typename Id<TStringSet>::Type TId;
+
+	// TraceBack values for Gotoh
+	TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2; TTraceValue Stop = 3;
+
+	TId id1 = positionToId(const_cast<TStringSet&>(str), 0);
+	TId id2 = positionToId(const_cast<TStringSet&>(str), 1);	 
+	TSize len1 = indexPair[1];
+	TSize len2 = indexPair[0];
+	if ((indexPair[0] == 0) || (indexPair[1] == 0)) return;
+	TSize numCols = length(str[0]);
+	TSize numRowsOrig = length(str[1]);
+	if (len1 < numCols) _alignTracePrint(align, str[0], str[1], id1, len1, id2, len2, numCols - len1, Horizontal);
+	if (len2 < numRowsOrig) _alignTracePrint(align, str[0], str[1], id1, len1, id2, len2, numRowsOrig - len2, Vertical);
+	TSize numRows = (numRowsOrig >> 1) + (numRowsOrig & 1);
+	
+	
+
+	// Initialize everything	
+	TTraceValue nextTraceValue = (len2 & 1) ? trace[(len1 - 1)*numRows + ((len2 - 1) >> 1)] >> 4 : trace[(len1 - 1)*numRows + ((len2 - 1) >> 1)];
+	TTraceValue tv = Diagonal;
+	if (initialDir == Diagonal) tv = (nextTraceValue & 3);
+	else if (initialDir == Horizontal) {
+		if ((nextTraceValue >> 2) & 1) _alignTracePrint(align, str[0], str[1], id1, --len1, id2, len2, (TSize) 1, Horizontal);
+		else tv = Horizontal;
+	} else if (initialDir == Vertical) {
+		if ((nextTraceValue >> 3) & 1) _alignTracePrint(align, str[0], str[1], id1, len1, id2, --len2, (TSize) 1, Vertical);
+		else tv = Vertical;
+	}
+	TSize segLen = 0;
+	TTraceValue tvOld = tv;
+
+	// Now follow the trace
+	do {
+		nextTraceValue = (len2 & 1) ? trace[(len1 - 1)*numRows + ((len2 - 1) >> 1)] >> 4 : trace[(len1 - 1)*numRows + ((len2 - 1) >> 1)];
+		if ((nextTraceValue & 3) == Stop) break;
+		_setForbiddenCell(forbidden, len1, len2, numRowsOrig);	
+		if (tv == Diagonal) tv = (nextTraceValue & 3);
+		else if (tv == Horizontal) {
+			if ((nextTraceValue >> 2) & 1) tv = Diagonal; 
+			else tv =  Horizontal;
+		} else if (tv == Vertical) {
+			if ((nextTraceValue >> 3) & 1) tv =  Diagonal; 
+			else tv =  Vertical;
+		}
+		if (tv == Diagonal) {
+			if (tv != tvOld) {
+				if (tvOld == Vertical) --len2;
+				else --len1;
+				_alignTracePrint(align, str[0], str[1], id1, len1, id2, len2, ++segLen, tvOld);
+				tvOld = tv; segLen = 0;
+			} else {
+				++segLen;
+				--len1; --len2;
+			}
+		} else if (tv == Horizontal) {
+			if (tv != tvOld) {
+				_alignTracePrint(align, str[0], str[1], id1, len1, id2, len2, segLen, tvOld);
+				if ((nextTraceValue >> 2) & 1) {
+					_alignTracePrint(align, str[0], str[1], id1, --len1, id2, len2, (TSize) 1, Horizontal);
+					tv = Diagonal; segLen = 0;
+				} else {
+					tvOld = tv; segLen = 1;
+					--len1;
+				}
+			} else {
+				++segLen;
+				--len1;
+			}
+		} else if (tv == Vertical) {
+			if (tv != tvOld) {
+				_alignTracePrint(align, str[0], str[1], id1, len1, id2, len2, segLen, tvOld);
+				if ((nextTraceValue >> 3) & 1) {
+					_alignTracePrint(align, str[0], str[1], id1, len1, id2, --len2, (TSize) 1, Vertical);
+					tv = Diagonal; segLen = 0;
+				} else {
+					tvOld = tv; segLen = 1;
+					--len2;
+				}
+			} else {
+				++segLen;
+				--len2;
+			}
+		}
+	} while ((len1 != 0) && (len2 !=0));
+	// Process left-overs
+	if (segLen) _alignTracePrint(align, str[0], str[1], id1, len1, id2, len2, segLen, tvOld);
+
+	// Handle the remaining sequence
+	if (len1 != 0) _alignTracePrint(align, str[0], str[1], (TId) id1, (TSize) 0, (TId) 0, (TSize) 0, (TSize) len1, Horizontal);
+	if (len2 != 0) _alignTracePrint(align, str[0], str[1], (TId) 0, (TSize) 0, (TId) id2, (TSize) 0, (TSize) len2, Vertical);
+}
+
+template <typename TTrace, typename TStringSet, typename TScore, typename TIndexPair, typename TForbidden>
+inline typename Value<TScore>::Type
+_alignSmithWaterman(TTrace& trace,
+					  TStringSet const& str,
+					  TScore const & sc,
+					  typename Value<TTrace>::Type& initialDir,
+					  TIndexPair& indexPair,
+					  TForbidden& forbidden)
+{
+	SEQAN_CHECKPOINT
+	typedef typename Size<TTrace>::Type TSize;
+	typedef typename Value<TTrace>::Type TTraceValue;
+	
+	// TraceBack values for Smith Waterman
+	TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2; TTraceValue Stop = 3;
+
+	// The DP Matrix for diagonal walks
+	typedef typename Value<TScore>::Type TScoreValue;
+	typedef String<TScoreValue> TColumn;
+	TColumn mat;
+	// The DP Matrix for gaps from the left
+	TColumn horizontal;
+	// The DP Matrix for gaps from the top
+	TScoreValue vert = 0;
+
+	typedef typename Iterator<TColumn, Standard>::Type TMatIter;
+
+	// Initialization
+	typedef typename Value<TStringSet>::Type TString;
+	TString const& str1 = str[0];
+	TString const& str2 = str[1];		
+	TSize len1 = length(str1);
+	TSize len2 = length(str2);
+	resize(mat, (len2+1));   // One column for the diagonal matrix
+	resize(horizontal, (len2+1));   // One column for the horizontal matrix
+	resize(trace, len1 * ((len2 >> 1) + (len2 & 1)), 0);
+	TTraceValue tvMat= 0;
+
+	// Record the max score
+	TScoreValue score_max = 0;
+	indexPair[0] = 0; indexPair[1] = 0;
+	initialDir = Stop;
+	
+	// Classical DP
+	TScoreValue max_val = 0;
+	TScoreValue a = 0;
+	TScoreValue b = 0;
+	typedef typename Iterator<TTrace, Standard>::Type TTraceIter;
+	TTraceIter it = begin(trace, Standard() );
+	TMatIter matIt = begin(mat, Standard() );
+	TMatIter horiIt = begin(horizontal, Standard() );
+	*matIt = 0;
+	for(TSize row = 1; row <= len2; ++row) {
+		*(++matIt) = 0;
+		*(++horiIt) = scoreGapOpenHorizontal(sc, 0, row-1, str1, str2) - scoreGapExtendHorizontal(sc, 0, row-1, str1, str2);
+	}
+	for(TSize col = 1; col <= len1; ++col) {
+		matIt = begin(mat, Standard() );
+		horiIt = begin(horizontal, Standard() );
+		TScoreValue diagValMat = *matIt;
+		*matIt = 0;
+		vert = scoreGapOpenVertical(sc, col-1, 0, str1, str2) - scoreGapExtendVertical(sc, col-1, 0, str1, str2);
+		TSize row = 1;
+		while(row <= len2) {
+			if (_isClumping(forbidden, row, col, len2)) {
+				*it <<= 3;
+				*it |= Stop;
+				max_val = 0;
+				vert = 0;
+				*(++horiIt) = 0;
+				++matIt;
+			} else {
+				// Get the new maximum for vertical
+				a = *matIt + scoreGapOpenVertical(sc, col-1, row-1, str1, str2);
+				b = vert + scoreGapExtendVertical(sc, col-1, row-1, str1, str2);
+				if (a > b) { vert = a; *it |= 1;} 
+				else vert = b;
+	
+				// Get the new maximum for horizontal
+				*it <<= 1;
+				a = *(++matIt) + scoreGapOpenHorizontal(sc, col-1, row-1, str1, str2);
+				b = *(++horiIt) + scoreGapExtendHorizontal(sc, col-1, row-1, str1, str2);
+				if (a > b) {*horiIt = a; *it |= 1; } 
+				else *horiIt =  b;
+	
+				// Get the new maximum for mat
+				*it <<= 2;
+				max_val = diagValMat + score(const_cast<TScore&>(sc), col-1, row-1, str1, str2);
+				tvMat =  Diagonal;
+				if (vert > max_val) {
+					max_val = vert;
+					tvMat =  Vertical;
+				}
+				if (*horiIt > max_val) {
+					max_val = *horiIt;
+					tvMat =  Horizontal;
+				}
+				if (0 >= max_val) {
+					max_val = 0;
+					tvMat =  Stop;
+				}
+				*it |= tvMat;
+			}
+
+			// Assign the new diagonal values
+			diagValMat = *matIt;
+			*matIt = max_val;
+
+			// Record the new best score
+			if (max_val > score_max) {
+				indexPair[0] = row; indexPair[1] = col;
+				score_max = max_val;
+				initialDir = tvMat;
+			}
+
+			if (row & 1) *it <<= 1; else ++it;
+			++row;
+		}
+		if (!(row & 1)) {*it <<= 3; ++it; }
+	}
+
+	//// Debug code
+	//for(TSize i= 0; i<len2;++i) {
+	//	for(TSize j= 0; j<len1;++j) {
+	//		std::cout << (TSize) getValue(trace, j*len2 + i) << ',';
+	//	}
+	//	std::cout << std::endl;
+	//}
+	//std::cout << "Max score: " << best_row << ',' << best_col << ':' << score_max << " (" << (TSize) initialDir << ")" << std::endl;
+
+	return score_max;
+}
+
+template<typename TAlign, typename TStringSet, typename TForbidden, typename TScore>
+inline typename Value<TScore>::Type
+_localAlignment(TAlign& align,
+				TStringSet& str,
+				TForbidden& forbidden,
+				TScore const& sc,
+				SmithWatermanClump)
+{
+	SEQAN_CHECKPOINT
+	typedef typename Value<TScore>::Type TScoreValue;
+	typedef typename Size<TStringSet>::Type TSize;
+	  
+	TScoreValue maxScore;
+	TSize indexPair[2];
+	
+	// Trace
+	String<unsigned char> trace;
+	unsigned char initialDir;
+
+	// Create the trace
+	maxScore = _alignSmithWaterman(trace, str, sc, initialDir, indexPair, forbidden);	
+
+	//// Debug code
+	//for(TSize i= 0; i<length(str[1]);++i) {
+	//	for(TSize j= 0; j<length(str[0]);++j) {
+	//		std::cout << (TSize) getValue(forbidden, j*length(str[1]) + i) << ',';
+	//	}
+	//	std::cout << std::endl;
+	//}
+	//std::cout << std::endl;
+	
+	// Follow the trace and create the alignment
+	_alignSmithWatermanTrace(align, str, trace, initialDir, indexPair, forbidden);
+	
+	return maxScore;
+}
+
+template<typename TString, typename TMatches, typename TScores, typename TScore, typename TSize1>
+inline void
+_localAlignment(StringSet<TString, Dependent<> > const& str,
+				TMatches& matches,
+				TScores& scores,
+				TScore const& sc,
+				TSize1 numAlignments,
+				SmithWatermanClump)
+{
+	SEQAN_CHECKPOINT
+	typedef typename Value<TScore>::Type TScoreValue;
+	typedef typename Size<TMatches>::Type TSize;
+  
+	// For clumpping remember the used positions
+	TSize len0 = length(str[0]);
+	TSize len1 = length(str[1]);
+	String<bool> forbidden;
+	resize(forbidden, len0 * len1, false);
+
+	// Stop looking for local alignments, if there score is too low
+	TScoreValue local_score = 0;
+	TScoreValue last_score = 0;
+	for(TSize count = 0; count < (TSize) numAlignments; ++count) {
+		// Create the local alignment
+		TSize from = length(matches);
+		local_score = _localAlignment(matches, str, forbidden, sc, SmithWatermanClump());
+		TSize to = length(matches);
+		if (2 * local_score < last_score) {
+			resize(matches, from, Generous());
+			break;
+		} 
+		last_score = local_score;
+		resize(scores, to);
+		for(TSize k = from; k<to; ++k) scores[k] = local_score;
+	}
+}
+
+template<typename TString, typename TMatches, typename TScores, typename TScoreValue, typename TSpec2, typename TSize, typename TTag>
+inline void
+_multiLocalAlignment(StringSet<TString, Dependent<> > const& str,
+                     TMatches& matches,
+                     TScores& scores,
+                     Score<TScoreValue, TSpec2> const& sc,
+                     TSize numAlignments,
+                     TTag)
+{
+	// Make a multiple local alignment and get all matches
+	_localAlignment(str,matches,scores,sc,numAlignments,TTag());
+}
+
+// ---------------------------------------------------------------------------
+// END OF TO BE REMOVED LEGACY CODE
+// ---------------------------------------------------------------------------
 
 //////////////////////////////////////////////////////////////////////////////
 // Pair selection to calculate alignment
@@ -365,7 +699,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 		assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
 		assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
 
-		multiLocalAlignment(pairSet, matches, scores, score_type, 4, SmithWatermanClump() );
+		_multiLocalAlignment(pairSet, matches, scores, score_type, 4, SmithWatermanClump());
 	}
 }
 

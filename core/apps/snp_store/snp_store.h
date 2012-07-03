@@ -3357,11 +3357,11 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
     if(length(refProfile) > length(multiReadProfile)) leftDiag -=  length(refProfile) - length(multiReadProfile);
 
     //globalAlignment(fragments, pairSet, consScore, AlignConfig<true,false,false,true>(), _max(leftDiag - increaseBand, -1 * (int) length(pairSet[1])), _min(rightDiag + increaseBand, (int) length(pairSet[0])), BandedNeedlemanWunsch());
- //   globalAlignment(fragments, pairSet, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, BandedGotoh());
+ //   globalAlignment(fragments, pairSet, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, Gotoh());
     
     //// Debug code
 //  Graph<Alignment<TStringSet, void, WithoutEdgeId> > g1(pairSet);
-//  int sc1 = globalAlignment(g1, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, BandedGotoh());
+//  int sc1 = globalAlignment(g1, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, Gotoh());
 //  std::cout << sc1 << std::endl;
 //  std::cout << g1 << std::endl;
 
@@ -3371,7 +3371,7 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
  //   appendValue(pairSet2, fragmentStore.contigStore[0].seq);
  //   appendValue(pairSet2, fragmentStore.readSeqStore[refId]);
     //Graph<Alignment<StringSet<TRead, Dependent<> >, void, WithoutEdgeId> > g2(pairSet2);
-    //int sc2 = globalAlignment(g2, scoreType, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, BandedGotoh());
+    //int sc2 = globalAlignment(g2, scoreType, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, Gotoh());
     //std::cout << sc2 << std::endl;
     //std::cout << g2 << std::endl;
 
@@ -3730,18 +3730,22 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
     TFragmentString fragments;
     //// Debug code
 //  Graph<Alignment<TStringSet, void, WithoutEdgeId> > g3(pairSet3);
-//  int sc3 = globalAlignment(g3, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, BandedGotoh());
+//  int sc3 = globalAlignment(g3, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, Gotoh());
 //  std::cout << sc3 << std::endl;
 //  std::cout << g3 << std::endl;
 
 //    std::cout << "leftDiag="<< leftDiag << std::endl;
 //    std::cout << "rightDiag="<< rightDiag << std::endl;
     // reference can be aligned to gaps at the ends, diploidConsensus needs to be fully aligned
+<<<<<<< .mine
+    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, Gotoh());
+=======
 //    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, BandedGotoh());
     globalAlignment(fragments, pairSet, consScore, AlignConfig<false,false,false,false>(), _max(leftDiag, -1 * (int) length(refProfile)), _min(rightDiag, (int) length(diploidConsensus)), BandedGotoh());
     
+>>>>>>> .r12239
     //if(options.realignAddBorder == 0)
-    //    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,false,false,false>(), leftDiag, rightDiag, BandedGotoh());
+    //    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,false,false,false>(), leftDiag, rightDiag, Gotoh());
 
     // now use removeState string to retrieve reference<->multiReadProfile alignment
     // use oldPosLimits string to retrieve positions wrt multiReadProfile

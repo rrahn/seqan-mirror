@@ -38,9 +38,10 @@ int main(int argc, char ** argv)
             continue;
 
         std::cout << "end = " << endPosition(finder) << ", begin = " << beginPosition(finder) << ", last = " << endPosition(finder) - 1 << ", score = " << getScore(pattern) << std::endl;
-        Align<Segment<Dna5String, InfixSegment> > ali;
-        appendValue(rows(ali), infix(finder));
-        appendValue(rows(ali), infix(read, 0, length(read)));
+        Align<Dna5String> ali;
+        resize(rows(ali), 2);
+        assignSource(row(ali, 0), infix(finder));
+        assignSource(row(ali, 1), infix(read, 0, length(read)));
         int scoreValue = globalAlignment(ali, scoring, NeedlemanWunsch());
         std::cout << "Global alignment with score " << scoreValue << std::endl;
         std::cout << ali << std::endl;

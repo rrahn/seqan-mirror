@@ -730,6 +730,105 @@ _calculateFirstRectangle(TSeed const &seed,
 	_deleteAlignment(alignmentVector, new_connect, score_length);
 }
 
+// Copied over from module align, has been replaced by Tobias Rausch's implementation.
+
+template <typename TScoreValue, unsigned DIMENSION, typename TString>
+TScoreValue
+_needlemanWunsch(Matrix<TScoreValue, DIMENSION> & matrix_,
+				  TString const & str1_,
+				  TString const & str2_,
+				  Score<TScoreValue, Simple> const & score_)
+{
+	typedef Matrix<TScoreValue, DIMENSION> TMatrix;
+
+	typedef typename Size<TMatrix>::Type TSize;
+	typedef typename Iterator<TMatrix, Standard>::Type TMatrixIterator;
+
+	typedef typename Iterator<TString const, Rooted>::Type TStringIterator;
+	typedef typename Value<TString const>::Type TValue;
+
+	//-------------------------------------------------------------------------
+	//define some variables
+	TSize str1_length = length(str1_);
+	TSize str2_length = length(str2_);
+	TStringIterator x_begin = begin(str1_) - 1;
+	TStringIterator x_end = end(str1_) - 1;
+	TStringIterator y_begin = begin(str2_) - 1;
+	TStringIterator y_end = end(str2_) - 1;
+
+	TStringIterator x = x_end;
+	TStringIterator y;
+
+	TScoreValue score_match = scoreMatch(score_);
+	TScoreValue score_mismatch = scoreMismatch(score_);
+	TScoreValue score_gap = scoreGapExtend(score_);
+
+	TScoreValue h = 0;
+	TScoreValue border_ = score_gap;
+	TScoreValue v = border_;
+
+	setDimension(matrix_, 2);
+	setLength(matrix_, 0, str1_length + 1);
+	setLength(matrix_, 1, str2_length + 1);
+	resize(matrix_);
+
+	TMatrixIterator col_ = end(matrix_) - 1;
+	TMatrixIterator finger1;
+	TMatrixIterator finger2;
+
+	//-------------------------------------------------------------------------
+	// init
+
+	finger1 = col_;
+	*finger1 = 0;
+	for (x = x_end; x != x_begin; --x)
+	{
+		goPrevious(finger1, 0);
+		*finger1 = border_;
+		border_ += score_gap;
+	}
+
+	//-------------------------------------------------------------------------
+	//fill matrix
+
+	border_ = 0;
+	for (y = y_end; y != y_begin; --y)
+	{
+		TValue cy = *y;
+
+		h = border_;
+		border_ += score_gap;
+		v = border_;
+
+		finger2 = col_;		//points to last column
+		goPrevious(col_, 1);	//points to this column
+		finger1 = col_;
+
+		*finger1 = v;
+
+		for (x = x_end; x != x_begin; --x)
+		{
+			goPrevious(finger1, 0);
+			goPrevious(finger2, 0);
+			if (*x == cy)
+			{
+				v = h + score_match;
+				h = *finger2;
+			}
+			else
+			{
+				TScoreValue s1 = h + score_mismatch;
+				h = *finger2;
+				TScoreValue s2 = score_gap + ((h > v) ? h : v);
+				v = (s1 > s2) ? s1 : s2;
+			}
+			*finger1 = v;
+		}
+	}
+
+	return v;
+}
+
 template<typename TSeed, typename TString, typename TDiff, typename TMatrix, typename TScoreString, typename TValue, typename TAlign, typename TScoreMatrix>
 void
 _calculateLastRectangle(TSeed const &seed,

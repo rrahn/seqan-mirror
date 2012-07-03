@@ -2,9 +2,12 @@
 #include <seqan/file.h>
 #include <seqan/align.h>
 
+// TODO(holtgrew): Remove, not required for new Gaps objects.
+
 using namespace seqan;
 
 // FRAGMENT(print-function)
+/*
 template<typename TRow, typename TString>
 void printDataArray(TRow & row, TString & name) {
     typedef typename Size<typename TRow::TArr>::Type TSize;
@@ -17,9 +20,11 @@ void printDataArray(TRow & row, TString & name) {
     }
     std::cout << "]" << std::endl;
 }
+*/
 
 // FRAGMENT(main)
 int main(int, const char *[]) {
+/*
 
 // FRAGMENT(unclipped)
     Align<DnaString> align;
@@ -91,5 +96,6 @@ int main(int, const char *[]) {
     std::cout << "  sp = 8 -> csp = ";
     std::cout << 8 - clippedBeginPosition(row(align, 0)) << std::endl;
     std::cout << std::endl;
+*/
 }
 

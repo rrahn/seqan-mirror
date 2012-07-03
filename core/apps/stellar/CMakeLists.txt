@@ -11,6 +11,10 @@ seqan_add_executable(stellar stellar.cpp
 install(TARGETS stellar
         DESTINATION bin)
 
+#find_package(GooglePerfTools)
+#include_directories(${GOOGLE_PERFTOOLS_INCLUDE_DIR})
+#target_link_libraries(stellar ${PROFILER_LIBRARIES})
+
 # Add app tests if Python interpreter could be found.
 if(PYTHONINTERP_FOUND)
   add_test(NAME app_test_stellar COMMAND ${PYTHON_EXECUTABLE}

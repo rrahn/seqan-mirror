@@ -185,26 +185,29 @@ void read(TFile & file, Align<TSource, TSpec> & align, FastaAlign const &) {
 		count = beg_end_length[i].i3;
 		
 		//Reserve space
-		clear(row(align,i));
-		createSource(row(align,i));
-		resize(source(row(align,i)),count);
-		if (length(source(row(align,i))) < count) {
-			count = length(source(row(align,i)));
-		}
-		setClippedEndPosition(row(align,i),count);
+        TSource buffer;
+        resize(buffer, count);
+        assignSource(row(align, i), buffer);
+		// clear(row(align,i));
+		// createSource(row(align,i));
+		// resize(source(row(align,i)),count);
+		// if (length(source(row(align,i))) < count) {
+		// 	count = length(source(row(align,i)));
+		// }
+		// setClippedEndPosition(row(align,i),count);
 		
 		//Read sequence
 		_streamSeekG(file, begin);
 
-		typename Position<TSource>::Type pos;
-		for (pos = 0; pos < count; ) {
+		typename Position<TSource>::Type pos, viewPos;
+		for (pos = 0, viewPos = 0; pos < count; ++viewPos) {
 			c = _streamGet(file);
 			if ((c != '\n') && (c != '\r') && (c != '-'))	{
 				source(row(align,i))[pos] = c;
 				++pos;
 			}
 			if (c=='-') {
-				insertGap(row(align,i), toViewPosition(row(align,i), pos));
+				insertGap(row(align,i), viewPos);
 			}
 		}
 	}
@@ -317,7 +320,7 @@ void _writeImpl(TFile & file, Align<TSource, TSpec> const & align, TStringContai
 				chars = 0;
 			}
 			if (isGap(begin_)) _streamPut(file, gapValue<char>());
-			else _streamPut(file, getValue(source(begin_)));
+			else _streamPut(file, getValue(begin_));
 			chars++;
 			++begin_;
 		}

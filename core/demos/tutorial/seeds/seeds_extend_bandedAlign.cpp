@@ -41,8 +41,8 @@ int main() {
     assignSource(row(align, 1), infix(seq1, leftPosition(seed, 1), rightPosition(seed, 1)+1));
     
     std::cout << std::endl << "Banded Alignment:" << std::endl;
-	std::cout << "Score: " << globalAlignment(align, stringSet(align), scoreMatrix,
-		-leftDiagonal(seed) - 2, -rightDiagonal(seed) + 2, BandedNeedlemanWunsch()) << std::endl;
+	std::cout << "Score: " << globalAlignment(align, scoreMatrix,
+		-leftDiagonal(seed) - 2, -rightDiagonal(seed) + 2, NeedlemanWunsch()) << std::endl;
     std::cout << align;
 
     return 0;

@@ -429,7 +429,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const& str,
 
 		// Overlap alignment
 		TSize from = length(matches);
-		TScoreValue myScore = globalAlignment(matches, pairSet, score_type, AlignConfig<true,true,true,true>(), itDiag->i1, itDiag->i2, BandedGotoh() );
+		TScoreValue myScore = globalAlignment(matches, pairSet, score_type, AlignConfig<true,true,true,true>(), itDiag->i1, itDiag->i2, Gotoh() );
 		TSize to = length(matches);
 
 		// Determine a sequence weight
@@ -444,7 +444,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const& str,
 
 			//// Debug Code
 			//Graph<Alignment<TStringSet, TSize> > tmp(pairSet);
-			//globalAlignment(tmp, pairSet, score_type, AlignConfig<true,true,true,true>(), (value(itDiag)).i1, (value(itDiag)).i2, BandedGotoh() );
+			//globalAlignment(tmp, pairSet, score_type, AlignConfig<true,true,true,true>(), (value(itDiag)).i1, (value(itDiag)).i2, Gotoh() );
 			////globalAlignment(tmp, pairSet, score_type, Gotoh() );
 			//std::cout << "Match length: " << matchLen << std::endl;
 			//std::cout << "Overlap length: " << overlapLen << std::endl;

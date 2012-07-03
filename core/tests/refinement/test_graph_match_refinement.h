@@ -377,10 +377,10 @@ getAlignments(String<TAlign> & alis, StringSet<TSequence, TSeqSpec> & seq, TScor
 			resize(rows(ali), 2);
 			setSource(row(ali, 0), seq[i]);
 			setSource(row(ali, 1), seq[j]);
-			LocalAlignmentFinder<int> sw_finder = LocalAlignmentFinder<int>(ali);
-			
-			int score = _smithWaterman(ali,sw_finder,score_type,cutoff);
-			if(score==0) continue;
+            LocalAlignmentEnumerator<TScore, Unbanded> enumerator(score_type, cutoff);
+
+            if (!nextLocalAlignment(ali, enumerator))
+                continue;
 			//cout << ali<<"\n";
 			//cout <<"Seq "<<i<<" - Seq "<<j<<"\n"<<score<< ali;
 			//cout << clippedBeginPosition(row(ali,0)) <<"   ";
@@ -390,8 +390,8 @@ getAlignments(String<TAlign> & alis, StringSet<TSequence, TSeqSpec> & seq, TScor
 			int k = 1;
 			while(k<numAlignments)
 			{
-				score = _smithWatermanGetNext(ali,sw_finder,score_type,cutoff);
-				if(score==0) break;
+				if (!nextLocalAlignment(ali, enumerator))
+                    break;
 				//cout <<score<< ali;
 				//cout << clippedBeginPosition(row(ali,0)) <<"   ";
 				//cout << clippedBeginPosition(row(ali,1)) <<"\n";

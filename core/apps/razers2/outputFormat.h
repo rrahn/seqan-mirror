@@ -421,10 +421,10 @@ getCigarLine(TAlign & align, TString & cigar, TString & mutations)
 	typedef typename Row<TAlign>::Type TRow;
 	typedef typename Iterator<TRow, Rooted>::Type TAlignIterator;
 
-	TAlignIterator ali_it0_stop = iter(row(align,0),endPosition(cols(align)));
-	TAlignIterator ali_it1_stop = iter(row(align,1),endPosition(cols(align)));
-	TAlignIterator ali_it0 = iter(row(align,0),beginPosition(cols(align)));
-	TAlignIterator ali_it1 = iter(row(align,1),beginPosition(cols(align)));					
+	TAlignIterator ali_it0_stop = end(row(align, 0));
+	TAlignIterator ali_it1_stop = end(row(align, 0));
+	TAlignIterator ali_it0 = begin(row(align, 0));
+	TAlignIterator ali_it1 = begin(row(align, 1));
 	TStringIterator readBase = begin(source(row(align,0))); 
 	//std::cout << "getting cigar line\n";//ali0 len = " <<ali_it0_stop-ali_it0 << " \t ali1 len = "<<ali_it1_stop-ali_it1<<"\n";
 	int readPos = 0;
@@ -469,7 +469,6 @@ getCigarLine(TAlign & align, TString & cigar, TString & mutations)
 		}
 		if(inserted>0) cigar << inserted << "I";
 	}
-	
 }
 
 //////////////////////////////////////////////////////////////////////////////

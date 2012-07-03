@@ -271,6 +271,17 @@ getValue(Proxy<IteratorProxy<TIterator> > const & me)
     return getValue(iter(me));
 }
 
+// ----------------------------------------------------------------------------
+// Function operator<<()
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TIterator>
+TStream & operator<<(TStream & stream, Proxy<IteratorProxy<TIterator> > const & it)
+{
+    stream << getValue(it);
+    return stream;
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_PROXY_ITERATOR_H_

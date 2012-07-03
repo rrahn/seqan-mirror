@@ -556,6 +556,25 @@ isReversed(Fragment<TSize, ExactReversableFragment<TSpec> > const& f)
 	return f.reversed;
 }
 
+// Compare lexicographically as tuple.
+
+template<typename TSize, typename TSpec>
+inline bool operator>(Fragment<TSize, ExactFragment<TSpec> > const & lhs,
+                      Fragment<TSize, ExactFragment<TSpec> > const & rhs)
+{
+    if (lhs.seqId1 > rhs.seqId1)
+        return true;
+    if (lhs.seqId1 == rhs.seqId1 && lhs.begin1 > rhs.begin1)
+        return true;
+    if (lhs.seqId1 == rhs.seqId1 && lhs.begin1 == rhs.begin1 && lhs.seqId2 > rhs.seqId2)
+        return true;
+    if (lhs.seqId1 == rhs.seqId1 && lhs.begin1 == rhs.begin1 && lhs.seqId2 == rhs.seqId2 && lhs.begin2 > rhs.begin2)
+        return true;
+    if (lhs.seqId1 == rhs.seqId1 && lhs.begin1 == rhs.begin1 && lhs.seqId2 == rhs.seqId2 && lhs.begin2 == rhs.begin2 && lhs.len > rhs.len)
+        return true;
+    return false;
+}
+
 }// namespace SEQAN_NAMESPACE_MAIN
 
 #endif //#ifndef SEQAN_HEADER_...

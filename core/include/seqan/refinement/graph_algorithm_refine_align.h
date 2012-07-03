@@ -57,13 +57,13 @@ SEQAN_CHECKPOINT
 	if(seg_num == 0)
 	{
 		seq_j_id = seq_map[getObjectId(source(row(segment,1)))];
-		if(node_i >= clippedEndPosition(row(segment,0))) node_j = static_cast<TPos2>(-1);
+		if(node_i >= (TPos1)clippedEndPosition(row(segment,0))) node_j = static_cast<TPos2>(-1);
 		else node_j = toSourcePosition(row(segment,1),toViewPosition(row(segment,0),node_i));
 	}
 	else
 	{
 		seq_j_id  = seq_map[getObjectId(source(row(segment,0)))];
-		if(node_i >= clippedEndPosition(row(segment,1))) node_j = static_cast<TPos2>(-1);
+		if(node_i >= (TPos1)clippedEndPosition(row(segment,1))) node_j = static_cast<TPos2>(-1);
 		else node_j = toSourcePosition(row(segment,0),toViewPosition(row(segment,1),node_i));
 	}
 }

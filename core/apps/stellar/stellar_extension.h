@@ -159,12 +159,16 @@ SEQAN_CHECKPOINT
     }
 
     // Set view positions to the eps-match
-	setClippedBeginPosition(row(align, 0), toSourcePosition(row(align, 0), beginPos));
-	setClippedBeginPosition(row(align, 1), toSourcePosition(row(align, 1), beginPos));
-	setBeginPosition(row(align, 0), beginPos);
-	setBeginPosition(row(align, 1), beginPos);
-	setClippedEndPosition(row(align, 0), toSourcePosition(row(align, 0), endPos));
-	setClippedEndPosition(row(align, 1), toSourcePosition(row(align, 1), endPos));
+    setClippedBeginPosition(row(align, 0), beginPos);
+    setClippedBeginPosition(row(align, 1), beginPos);
+	setClippedEndPosition(row(align, 0), endPos);
+	setClippedEndPosition(row(align, 1), endPos);
+	// setClippedBeginPosition(row(align, 0), toSourcePosition(row(align, 0), beginPos));
+	// setClippedBeginPosition(row(align, 1), toSourcePosition(row(align, 1), beginPos));
+	// setBeginPosition(row(align, 0), beginPos);
+	// setBeginPosition(row(align, 1), beginPos);
+	// setClippedEndPosition(row(align, 0), toSourcePosition(row(align, 0), endPos));
+	// setClippedEndPosition(row(align, 1), toSourcePosition(row(align, 1), endPos));
 
 	if (endPos == 0 && beginPos == 0) return 1;
 	return 0;
@@ -470,10 +474,10 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
 				//std::cout << row << ',' << col << ':' << value(originalMat, actualRow * len1 + actualCol) << std::endl; 
 				if (tv == Diagonal) {
 					if (newTv == Horizontal) {
-						_alignTracePrint(align, str, id1, actualCol, id2, actualRow, seqLen, tv);
+						_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
 						--col; seqLen = 1;
 					} else if (newTv == Vertical) {
-						_alignTracePrint(align, str, id1, actualCol, id2, actualRow, seqLen, tv);
+						_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
 						--row; ++col; seqLen = 1;
 					} else {
 						--row; ++seqLen;
@@ -481,20 +485,20 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
 				} else {
 					if (tv == Horizontal) { 
 						if (newTv == Diagonal) {
-							_alignTracePrint(align, str, id1, actualCol, id2, actualRow, seqLen, tv);
+							_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
 							--row; seqLen = 1;
 						} else if (newTv == Vertical) {
-							_alignTracePrint(align, str, id1, actualCol, id2, actualRow, seqLen, tv);
+							_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
 							--row; ++col; seqLen = 1;
 						} else {
 							--col; ++seqLen;
 						}
 					} else { 
 						if (newTv == Diagonal) {
-							_alignTracePrint(align, str, id1, actualCol, id2, actualRow, seqLen, tv);
+							_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
 							--row; seqLen = 1;
 						} else if (newTv == Horizontal) {
-							_alignTracePrint(align, str, id1, actualCol, id2, actualRow, seqLen, tv);
+							_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
 							--col; seqLen = 1;
 						} else {
 							--row; ++col; ++seqLen;
@@ -506,12 +510,12 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
 		}
 	
 		// Align left overs
-		if (seqLen) _alignTracePrint(align, str, id1, actualCol, id2, actualRow, seqLen, tv);
+		if (seqLen) _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
 	}
 
 	// Handle the remaining sequence
-	if (actualCol != 0) _alignTracePrint(align, str, (TId) id1, (TSize) 0, (TId) 0, (TSize) 0, (TSize) actualCol,  Horizontal);
-	else if (actualRow != 0) _alignTracePrint(align, str, (TId) 0, (TSize) 0, (TId) id2, (TSize) 0, (TSize) actualRow,  Vertical);
+	if (actualCol != 0) _alignTracePrint(align, str[0], str[1], (TId) id1, (TSize) 0, (TId) 0, (TSize) 0, (TSize) actualCol,  Horizontal);
+	else if (actualRow != 0) _alignTracePrint(align, str[0], str[1], (TId) 0, (TSize) 0, (TId) id2, (TSize) 0, (TSize) actualRow,  Vertical);
 
 }
 
@@ -542,7 +546,11 @@ SEQAN_CHECKPOINT
 	AlignTraceback<TPos> traceBack;
 	_alignBandedNeedlemanWunschTrace(traceBack, str, matrixLeft, coordinate,
 				getUpperDiagonal(seedOld) - getUpperDiagonal(seed), getUpperDiagonal(seedOld) - getLowerDiagonal(seed));
-	
+  //std::cerr << "TRACEBACK\n";
+	//for (unsigned i = 0; i < length(traceBack.tvs); ++i)
+  //  std::cerr << (int)traceBack.tvs[i] << "\t" << traceBack.sizes[i] << "\n";
+  //std::cerr << "---------\n";
+
 	reverse(traceBack.sizes);
 	reverse(traceBack.tvs);
 
@@ -551,7 +559,9 @@ SEQAN_CHECKPOINT
 	assignSource(row(infixAlign, 0), infix(str[0], length(str[0]) - endLeftA, length(str[0])));
 	assignSource(row(infixAlign, 1), infix(str[1], length(str[1]) - endLeftB, length(str[1])));
 
-	_pumpTraceToAlign(infixAlign, traceBack);
+  //std::cerr << "\nLEFT SEQS\n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
+	_pumpTraceToGaps(row(infixAlign, 0), row(infixAlign, 1), traceBack);
+  //std::cerr << "INFIX ALIGN AFTER LEFT TRACEBACK\n\n" << infixAlign << "\n";
 	integrateAlign(align, infixAlign);
 }
 
@@ -584,13 +594,19 @@ SEQAN_CHECKPOINT
 	AlignTraceback<TPos> traceBack;
 	_alignBandedNeedlemanWunschTrace(traceBack, str, matrixRight, coordinate,
 				getLowerDiagonal(seedOld) - getUpperDiagonal(seed), getLowerDiagonal(seedOld) - getLowerDiagonal(seed));
+  //std::cerr << "TRACEBACK\n";
+	//for (unsigned i = 0; i < length(traceBack.tvs); ++i)
+  //  std::cerr << (int)traceBack.tvs[i] << "\t" << traceBack.sizes[i] << "\n";
+  //std::cerr << "---------\n";
 
 	Align<TInfix> infixAlign;
 	resize(rows(infixAlign), 2);
 	assignSource(row(infixAlign, 0), infix(str[0], 0, endRightA));
 	assignSource(row(infixAlign, 1), infix(str[1], 0, endRightB));
 
-	_pumpTraceToAlign(infixAlign, traceBack);
+  //std::cerr << "\nRIGHT SEQS\n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
+	_pumpTraceToGaps(row(infixAlign, 0), row(infixAlign, 1), traceBack);
+  //std::cerr << "INFIX ALIGN AFTER RIGHT TRACEBACK\n\n" << infixAlign << "\n";
 	integrateAlign(align, infixAlign);
 }
 
@@ -658,12 +674,16 @@ SEQAN_CHECKPOINT
 	}
 
 	// set begin and end positions of align
-	setClippedBeginPosition(row(align, 0), getBeginDim0(seedOld) - endLeftA);
-	setClippedBeginPosition(row(align, 1), getBeginDim1(seedOld) - endLeftB);
-	setBeginPosition(row(align, 0), 0);
-	setBeginPosition(row(align, 1), 0);
-	setClippedEndPosition(row(align, 0), getEndDim0(seedOld) + endRightA);
-	setClippedEndPosition(row(align, 1), getEndDim1(seedOld) + endRightB);
+	setBeginPosition(row(align, 0), getBeginDim0(seedOld) - endLeftA);
+	setBeginPosition(row(align, 1), getBeginDim1(seedOld) - endLeftB);
+	setEndPosition(row(align, 0), getEndDim0(seedOld) + endRightA);
+	setEndPosition(row(align, 1), getEndDim1(seedOld) + endRightB);
+	// setClippedBeginPosition(row(align, 0), getBeginDim0(seedOld) - endLeftA);
+	// setClippedBeginPosition(row(align, 1), getBeginDim1(seedOld) - endLeftB);
+	// setBeginPosition(row(align, 0), 0);
+	// setBeginPosition(row(align, 1), 0);
+	// setClippedEndPosition(row(align, 0), getEndDim0(seedOld) + endRightA);
+	// setClippedEndPosition(row(align, 1), getEndDim1(seedOld) + endRightB);
 
 	// traceback through matrix from begin/end pos on ...
 	if((*endPair.i1).length != 0) { // ... extension to the left
@@ -672,8 +692,9 @@ SEQAN_CHECKPOINT
 	if((*endPair.i2).length != 0) { // ... extension to the right
 		_tracebackRight(matrixRight, (*endPair.i2).coord, a, b, seed, seedOld, endRightA, endRightB, align);
 	}
+  SEQAN_ASSERT_EQ(length(row(align, 0)), length(row(align, 1)));
 
-	if (direction == EXTEND_BOTH || direction == EXTEND_LEFT) 
+	if (direction == EXTEND_BOTH || direction == EXTEND_LEFT)
 		_reverseLeftExtension(a, b, seed, seedOld); // back to original orientation
 
 	return true;
@@ -681,7 +702,7 @@ SEQAN_CHECKPOINT
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-template <typename TSource, typename TSpec1, typename TSpec2> 
+template <typename TSource, typename TSpec1, typename TSpec2>
 void
 integrateAlign(Align<TSource, TSpec1> & align,
 			   Align<Segment<typename Infix<TSource>::Type, InfixSegment>, TSpec2> const & infixAlign) {
@@ -692,12 +713,14 @@ SEQAN_CHECKPOINT
 	String<TPos> viewPos;
 	TPos pos;
 	for (TSize i = 0; i < length(rows(infixAlign)); ++i) {
-		pos = beginPosition(source(row(infixAlign, i))) + clippedBeginPosition(row(infixAlign, i));
+		pos = beginPosition(source(row(infixAlign, i))) + beginPosition(row(infixAlign, i));
 		pos += beginPosition(host(source(row(infixAlign, i))));
 		appendValue(viewPos, toViewPosition(row(align, i), pos));
 	}
 
+    // std::cerr << "HAHA infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
 	integrateAlign(align, infixAlign, viewPos);
+    // std::cerr << "HAHA infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -718,22 +741,25 @@ SEQAN_CHECKPOINT
     typedef typename Position<TSequence>::Type TPos;
     typedef Seed<Simple> TSeed;
 
-	integrateAlign(align, localAlign);
+    // std::cerr << "LOCAL ALIGN\n" << row(localAlign, 0) << "\n" << row(localAlign, 1) << "\n";
+    // std::cerr << "ALIGN\n" << row(align, 0) << "\n" << row(align, 1) << "\n";
+    integrateAlign(align, localAlign);
+    //std::cerr << __LINE__ << "\tLOCAL ALIGN\n" << row(localAlign, 0) << "\n" << row(localAlign, 1) << "\n";
+    //std::cerr << __LINE__ << "\tALIGN\n" << row(align, 0) << "\n" << row(align, 1) << "\n";
 
-	// begin and end position of local alignment (seed)
-	TPos seedBeginA = clippedBeginPosition(row(localAlign, 0)) + beginPosition(a);
-	TPos seedBeginB = clippedBeginPosition(row(localAlign, 1)) + beginPosition(b);
-	TPos seedEndA = clippedEndPosition(row(localAlign, 0)) + beginPosition(a);
-	TPos seedEndB = clippedEndPosition(row(localAlign, 1)) + beginPosition(b);
+	// Get begin and end position of local alignment (seed) as source positions
+	// in underlying sequences.
+	TPos seedBeginA = beginPosition(row(localAlign, 0)) + beginPosition(a);
+	TPos seedBeginB = beginPosition(row(localAlign, 1)) + beginPosition(b);
+	TPos seedEndA = endPosition(row(localAlign, 0)) + beginPosition(a);
+	TPos seedEndB = endPosition(row(localAlign, 1)) + beginPosition(b);
 
 	if (direction == EXTEND_NONE) {
 		// set begin and end positions of align
-		setClippedBeginPosition(row(align, 0), seedBeginA);
-		setClippedBeginPosition(row(align, 1), seedBeginB);
-		setBeginPosition(row(align, 0), 0);
-		setBeginPosition(row(align, 1), 0);
-		setClippedEndPosition(row(align, 0), seedEndA);
-		setClippedEndPosition(row(align, 1), seedEndB);
+		setBeginPosition(row(align, 0), seedBeginA);
+		setBeginPosition(row(align, 1), seedBeginB);
+		setEndPosition(row(align, 0), seedEndA);
+		setEndPosition(row(align, 1), seedEndB);
 
 		if ((TSize)length(row(align, 0)) < minLength)
 			return false;
@@ -770,7 +796,10 @@ SEQAN_CHECKPOINT
 		typename Infix<TSequence>::Type infixB = infix(host(b), beginPosition(b), endPosition(b));
 		if (!_bestExtension(infixA, infixB, seed, seedOld, alignLen, alignErr, scoreMatrix, direction, minLength, eps, align))
 			return false;
+		SEQAN_ASSERT_EQ(length(row(align, 0)), length(row(align, 1)));
 	}
+  SEQAN_ASSERT_EQ(length(row(align, 0)), length(row(align, 1)));
+  //std::cerr << "extracted alignment\n-------------\n" << align << "----------------\n";
 	return true;
 }
 

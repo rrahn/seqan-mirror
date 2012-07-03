@@ -100,6 +100,11 @@
         <div class="values"><strong>Values:</strong> $!html.translateMarkup(text, node=tree.find(path))!$</div>
         <!--(end)-->
       <!--(end)-->
+      <!--(if tree.find(path + ['type']))-->
+        <!--(for text in tree.find(path + ['type']).texts)-->
+        <div class="types"><strong>Type:</strong> $!html.translateMarkup(text, node=tree.find(path))!$</div>
+        <!--(end)-->
+      <!--(end)-->
       <!--(if tree.find(path + ['default']))-->
         <!--(for text in tree.find(path + ['default']).texts)-->
         <div class="default"><strong>Default:</strong> $!html.translateMarkup(text, node=tree.find(path))!$</div>

@@ -229,6 +229,27 @@ _internalCreateChar(SimpleType<TValue, TSpec> const &, TNum i)
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// gapValueImpl()
+//////////////////////////////////////////////////////////////////////////////
+
+template <typename THost, char CHAR, typename TSpec>
+inline ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >
+gapValueImpl(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > /*const*/ *)
+{
+    typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > T;
+    if (CHAR == '-')
+    {
+        return _internalCreateChar(T(), (unsigned)ValueSize<T>::VALUE - 1);
+    }
+    else
+    {
+        THost * ptr = 0;
+        return gapValueImpl(ptr);
+    }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
 // conversions
 //////////////////////////////////////////////////////////////////////////////
 

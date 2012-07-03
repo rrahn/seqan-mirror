@@ -16,7 +16,7 @@ Lesser General Public License for more details.
 ==========================================================================*/
 
 #include <seqan/basic.h>
-#include <seqan/graph_align.h>
+#include <seqan/align.h>
 #include <seqan/modifier.h>
 #include <seqan/misc/misc_cmdparser.h>
 
@@ -57,7 +57,14 @@ bool _loadSequences(TSeqSet& sequences,
 	return (seqCount > 0);
 }
 
-
+// TODO(holtgrew): Make publically available.
+template<typename TStringSet, typename TCargo, typename TSpec>
+inline int
+globalAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
+				Lcs)
+{
+	return globalAlignment(g, stringSet(g), Lcs());
+}
 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -90,11 +97,11 @@ pairwise_align(TScore const& sc,
 	if (!banded) {
 		if (method == 0) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), NeedlemanWunsch());
 		else if (method == 1) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), Gotoh());
-		else if (method == 2) aliScore = localAlignment(gAlign, sc, SmithWaterman());
+		else if (method == 2) aliScore = localAlignment(gAlign, sc);
 		else if (method == 3) aliScore = globalAlignment(gAlign, Lcs());
 	} else {
-		if (method == 0) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), low, high, BandedNeedlemanWunsch());
-		else if (method == 1) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), low, high, BandedGotoh());
+		if (method == 0) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), low, high, NeedlemanWunsch());
+		else if (method == 1) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), low, high, Gotoh());
 	}
 	
 	// Alignment output

@@ -219,7 +219,8 @@ Empty edges are traversed also, i.e. for every suffix there is a leaf node repre
 //////////////////////////////////////////////////////////////////////////////
 // needful forward declarations
 
-	struct ArrayGaps;
+	struct ArrayGaps_;
+    typedef Tag<ArrayGaps_> ArrayGaps;
 
 	template <typename TSource, typename TSpec>
 	class Align;

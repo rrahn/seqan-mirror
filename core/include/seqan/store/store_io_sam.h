@@ -172,10 +172,10 @@ getMDString(
     TGaps2 &gaps2)
 {
     typedef typename Value<TMDString>::Type TMDChar;
-    typename Iterator<TGaps1>::Type it1 = iter(gaps1, 0);
-    typename Iterator<TGaps2>::Type it2 = iter(gaps2, 0);
-    char op, lastOp = ' ';
-    unsigned numOps = 0;
+	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
+	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
+	char op, lastOp = ' ';
+	unsigned numOps = 0;
 
     clear(md);
     for (; !atEnd(it1) && !atEnd(it2); goNext(it1), goNext(it2))
@@ -238,38 +238,38 @@ getCigarString(
     TGaps2 &gaps2,
     TThresh splicedGapThresh)
 {
-    typename Iterator<TGaps1>::Type it1 = iter(gaps1, 0);
-    typename Iterator<TGaps2>::Type it2 = iter(gaps2, 0);
-    clear(cigar);
-    char op, lastOp = ' ';
-    unsigned numOps = 0;
+	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
+	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
+	clear(cigar);
+	char op, lastOp = ' ';
+	unsigned numOps = 0;
 
-//  std::cout << gaps1 << std::endl;
-//  std::cout << gaps2 << std::endl;
-    for (; !atEnd(it1) && !atEnd(it2); goNext(it1), goNext(it2))
-    {
-        if (isGap(it1))
-        {
-            if (isGap(it2))
-                op = 'P';
-            else if (isClipped(it2))
-                op = '?';
-            else
-                op = 'I';
-        } 
-        else if (isClipped(it1))
-        {
-            op = '?';
-        }
-        else 
-        {
-            if (isGap(it2))
-                op = 'D';
-            else if (isClipped(it2))
-                op = 'S';
-            else
-                op = 'M';
-        }
+	std::cout << "gaps1\t" << gaps1 << std::endl;
+	std::cout << "gaps2\t" << gaps2 << "\t" << clippedBeginPosition(gaps2) << std::endl;
+	for (; !atEnd(it1) && !atEnd(it2); goNext(it1), goNext(it2))
+	{
+		if (isGap(it1))
+		{
+			if (isGap(it2))
+				op = 'P';
+			else if (isClipped(it2))
+				op = '?';
+			else
+				op = 'I';
+		} 
+		else if (isClipped(it1))
+		{
+			op = '?';
+		}
+		else 
+		{
+			if (isGap(it2))
+				op = 'D';
+			else if (isClipped(it2))
+				op = 'S';
+			else
+				op = 'M';
+		}
         
         // append CIGAR operation
         if (lastOp != op)
@@ -290,16 +290,16 @@ getCigarString(
     }
 //  if (atEnd(it1) != atEnd(it2))
 //        std::cerr << "Invalid pairwise alignment:" << std::endl << gaps1 << std::endl << gaps2 << std::endl;
-    SEQAN_ASSERT_EQ(atEnd(it1), atEnd(it2));
-    if (lastOp == 'D' && numOps >= (unsigned)splicedGapThresh)
-        lastOp = 'N';
-    if (numOps > 0)
-    {
-        std::stringstream num;
-        num << numOps;
-        append(cigar, num.str());
-        appendValue(cigar, lastOp);
-    }
+	SEQAN_CHECK(atEnd(it1) == atEnd(it2), "Cannot get CIGAR from invalid pairwise alignment!");
+	if (lastOp == 'D' && numOps >= (unsigned)splicedGapThresh)
+		lastOp = 'N';
+	if (numOps > 0)
+	{
+		std::stringstream num;
+		num << numOps;
+		append(cigar, num.str());
+		appendValue(cigar, lastOp);
+	}
 }
 
 template <
@@ -329,11 +329,19 @@ getCigarString(
         TGaps2 &gaps2,
         TThresh splicedGapThresh)
 {
+<<<<<<< .mine
+	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
+	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
+	clear(cigar);
+	char op = '?', lastOp = ' ';
+	unsigned numOps = 0;
+=======
     typename Iterator<TGaps1>::Type it1 = iter(gaps1, 0);
     typename Iterator<TGaps2>::Type it2 = iter(gaps2, 0);
     clear(cigar);
     char op = '?', lastOp = ' ';
     unsigned numOps = 0;
+>>>>>>> .r12239
 
 //  std::cout << gaps1 << std::endl;
 //  std::cout << gaps2 << std::endl;
@@ -417,12 +425,12 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
     
     if (alignedRead.beginPos <= alignedRead.endPos) 
     {
-        setBeginPosition(contigGaps, alignedRead.beginPos);
-        setEndPosition(contigGaps, alignedRead.endPos);
+        setClippedBeginPosition(contigGaps, alignedRead.beginPos);
+        setClippedEndPosition(contigGaps, alignedRead.endPos);
     } else
     {
-        setBeginPosition(contigGaps, alignedRead.endPos);
-        setEndPosition(contigGaps, alignedRead.beginPos);
+        setClippedBeginPosition(contigGaps, alignedRead.endPos);
+        setClippedEndPosition(contigGaps, alignedRead.beginPos);
     }
 
     TReadGaps readGaps(readSeq, alignedRead.gaps);
@@ -1206,7 +1214,7 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-// _writeAlignments
+// _writeHeader
 
     template<typename TFile, typename TSpec, typename TConfig>
     inline void _writeHeader(TFile & target,
@@ -1411,8 +1419,11 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
             int errors = -1;
             if (alignedId < length(store.alignQualityStore))
                 errors = store.alignQualityStore[alignedId].errors;
+            std::cout << store.readNameStore[readId] << "\n";
             alignAndGetCigarString(cigar, md, store.contigStore[(*it).contigId], readSeq, *it, errors, doAlign);
             _streamWrite(target, cigar);
+			_streamWrite(std::cout, cigar);
+            std::cout << "\n";
             _streamPut(target, '\t');
             
             // <mrnm>

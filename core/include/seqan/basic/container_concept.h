@@ -40,6 +40,14 @@
 #define SEQAN_CORE_INCLUDE_SEQAN_BASIC_CONTAINER_CONCEPT_H_
 
 namespace seqan {
+
+// ============================================================================
+// Forwards
+// ============================================================================
+
+template <typename T> struct Infix;
+template <typename T> struct Prefix;
+template <typename T> struct Suffix;
     
 // ============================================================================
 // Concepts
@@ -50,6 +58,16 @@ struct Standard_;
 typedef Tag<Standard_> const Standard;
 template <typename TContainer, typename TSpec> struct Iterator;
 
+/**
+.Concept.Container
+..baseconcept:Concept.Assignable
+..baseconcept:Concept.DefaultConstructible
+..baseconcept:Concept.CopyConstructible
+..signature:ContainerConcept
+..summary:Concept for mutable containers.
+..include:seqan/basic.h
+*/
+
 // mutable container concept
 template <typename TContainer>
 struct ContainerConcept :
@@ -58,6 +76,8 @@ struct ContainerConcept :
     CopyConstructible<TContainer>
 {
     typedef typename Value<TContainer>::Type                TValue;
+    typedef typename GetValue<TContainer>::Type             TGetValue;
+    typedef typename Reference<TContainer>::Type            TReference;
     typedef typename Size<TContainer>::Type                 TSize;
     typedef typename Position<TContainer>::Type             TPosition;
     typedef typename Difference<TContainer>::Type           TDifference;
@@ -79,6 +99,7 @@ struct ContainerConcept :
         // test return of const values
         sameType(getValue(c, 0), val);
 
+        // TODO(holtgrew): Index based access requires random-access and *linear* container.
         // test whether returned references/proxies
         // can be assigned to val and vice versa
         val = value(c, 0);
@@ -88,6 +109,7 @@ struct ContainerConcept :
         // sameType(value(str, 0), val); would not work
         // for Strings returning proxies, e.g. String<.., Packed>
 
+        // TODO(holtgrew): Too strong assumption about random access iterators IMO.
         // test iterators
         sameType(iter, begin(c, Standard()));
         sameType(iter, end(c, Standard()));
@@ -96,6 +118,9 @@ struct ContainerConcept :
         // length and empty
         sameType(size, length(c));
         sameType(true, empty(c));
+
+        // clear
+        clear(c);
         
         // TODO: infix/suffix/prefix 
         // maybe we need a SequenceConcept between Container and String
@@ -105,59 +130,34 @@ struct ContainerConcept :
     }
 };
 
-template <typename TString>
-struct StringConcept :
-    ContainerConcept<TString>
+/**
+.Concept.Sequence
+..baseconcept:Concept.Container
+..summary:Concept for sequences.
+..include:seqan/basic.h
+*/
+
+SEQAN_CONCEPT_REFINE(SequenceConcept, (TString), (ContainerConcept))
 {
     typedef typename Value<TString>::Type                 TValue;
     typedef typename Size<TString>::Type                  TSize;
-    typedef typename Position<TString>::Type              TPosition;
+    typedef typename Position<TString>::Type              TPos;
     typedef typename Difference<TString>::Type            TDifference;
     typedef typename Iterator<TString, Standard>::Type    TIterator;
 
-    TString     str, str2;
     TValue      val;
     TSize       size;
-    TPosition   pos;
-    TDifference diff;
-    TIterator   iter;
+    TPos        pos;
+
+    TString     str, str2;
     
-    SEQAN_CONCEPT_USAGE(StringConcept)
+    SEQAN_CONCEPT_USAGE(SequenceConcept)
     {
         pos = 0u;
 
         // append
         append(str, str2);
         appendValue(str, val);
-
-        // assign
-        assign(str, str2);
-        assignValue(str, pos, val);
-        
-        // erase
-        erase(str, pos);
-        erase(str, pos, pos);
-        
-        // replace
-        replace(str, pos, pos, str2);
-        // there is no replaceValue as we have assignValue with the same semantic
-        
-        // insert
-        insert(str, pos, str2);
-        insertValue(str, pos, val);
-
-        // front/back
-        val = front(str);
-        val = back(str);
-        
-        // resize/reserve/clear
-        sameType(resize(str, size), size);
-        sameType(resize(str, size, val), size);
-        sameType(reserve(str, size), size);
-        clear(str);
-        
-        // untested:
-        // setValue, move, moveValue
 
         // capacity
         sameType(size, capacity(str));

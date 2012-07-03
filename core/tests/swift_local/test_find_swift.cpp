@@ -223,6 +223,7 @@ SEQAN_DEFINE_TEST(test_longest_epsMatch) {
     seq1 = "ACCTTTGCCCCCCCCCCTAAAAAAAATTAAAA";
     seq2 = "ACGTTTCCCCCCCCCCGAAAAAAAAGAAAA";
     alignment = testLongestEpsMatch(seq1, seq2);
+    std::cerr << alignment << std::endl;
     SEQAN_ASSERT(row(alignment, 0) == "ACCTTTGCCCCCCCCCCTAAAAAAAA");
     SEQAN_ASSERT(row(alignment, 1) == "ACGTTT-CCCCCCCCCCGAAAAAAAA");
     

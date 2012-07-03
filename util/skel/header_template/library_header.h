@@ -1,5 +1,5 @@
 // ==========================================================================
-// %(TITLE)s
+//                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
 // Copyright (c) 2006-2012, Knut Reinert, FU Berlin
 // All rights reserved.

@@ -8,15 +8,17 @@ int main()
 {
 //FRAGMENT(init)
 	Align< String<AminoAcid> > ali;
-	appendValue(rows(ali), "PNCFDAKQRTASRPL");
-	appendValue(rows(ali), "CFDKQKNNRTATRDTA");
-
+	resize(rows(ali), 1);
+	assignSource(row(ali, 0), "PNCFDAKQRTASRPL");
+	assignSource(row(ali, 1), "CFDKQKNNRTATRDTA");
 
 //FRAGMENT(ali)
 	LocalAlignmentFinder<> finder(ali);
 	Score<int> sc(3,-2,-1,-5);
 	unsigned count = 0;
-	while (localAlignment(ali, finder, sc, 0, WatermanEggert()) && count < 3) {
+	LocalAlignmentEnumerator<Score<int>, Unbanded> enumerator(sc);
+	while (nextLocalAlignment(ali, enumerator) && count < 3)
+	{
 		::std::cout << "Score = " << getScore(finder) << ::std::endl;
 		::std::cout << ali;
 		++count;

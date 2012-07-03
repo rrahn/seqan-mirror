@@ -981,7 +981,7 @@ getAlignment(TBlastHsp & hsp,
 SEQAN_CHECKPOINT
 
 	if(length(rows(ali))>1)
-        if(!emptySource(row(ali,0)) && !!emptySource(row(ali,1)))
+        if(!empty(source(row(ali,0))) && !!empty(source(row(ali,1))))
 			return getAlignment(hsp,ali,KnownSource());
 	
 	return getAlignment(hsp,ali,UnknownSource());

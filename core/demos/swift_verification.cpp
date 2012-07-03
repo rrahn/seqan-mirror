@@ -47,7 +47,7 @@ int main() {
 	// banded local alignment and integration of gaps in large alignment
 	int highDiag = 0;
 	int lowDiag = length(infix_0) - length(infix_1);
-	localAlignment(localAlign, scoreMatrix, lowDiag, highDiag, BandedSmithWaterman());
+	localAlignment(localAlign, scoreMatrix, lowDiag, highDiag);
 	integrateAlign(align, localAlign);
 
 	// ---------- seed extension with local alignment as seed ----------
@@ -76,7 +76,7 @@ int main() {
 		lowDiag = startDiagonal(seed) - leftDiagonal(seed);
 		highDiag = startDiagonal(seed) - rightDiagonal(seed);
 
-		globalAlignment(leftAlign, leftExtensions, scoreMatrix, lowDiag, highDiag, BandedNeedlemanWunsch());
+		globalAlignment(leftAlign, scoreMatrix, lowDiag, highDiag, NeedlemanWunsch());
 		integrateAlign(align, leftAlign);
 	}
 
@@ -95,7 +95,7 @@ int main() {
 		lowDiag = startDiag - leftDiagonal(seed);
 		highDiag = startDiag - rightDiagonal(seed);
 
-		globalAlignment(rightAlign, rightExtensions, scoreMatrix, lowDiag, highDiag, BandedNeedlemanWunsch());
+		globalAlignment(rightAlign, scoreMatrix, lowDiag, highDiag, NeedlemanWunsch());
 		integrateAlign(align, rightAlign);
 	}
 

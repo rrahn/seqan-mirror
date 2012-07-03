@@ -130,11 +130,11 @@ struct StellarMatch {
 		row1 = row(_align, 0);
 		row2 = row(_align, 1);
 
-		begin1 = clippedBeginPosition(row1);
-		end1 = clippedEndPosition(row1);
+		begin1 = beginPosition(row1);
+		end1 = endPosition(row1);
 
-		begin2 = clippedBeginPosition(row2);
-		end2 = clippedEndPosition(row2);
+		begin2 = beginPosition(row2);
+		end2 = endPosition(row2);
 	}
 };
 

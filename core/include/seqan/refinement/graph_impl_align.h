@@ -2115,6 +2115,54 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	return heaviestCommonSubsequence(g, str1, str2, noth);
 }
 
-}// namespace SEQAN_NAMESPACE_MAIN
+template <typename TStringSet, typename TCargo, typename TSpec, typename TSequenceH, typename TSequenceV, typename TId, typename TPos, typename TTraceValue>
+inline void
+_alignTracePrint(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
+                 TSequenceH const &,
+                 TSequenceV const &,
+                 TId const id1,
+                 TPos const pos1,
+                 TId const id2,
+                 TPos const pos2,
+                 TPos const segLen,
+                 TTraceValue const tv)
+{
+    // TraceBack values
+    TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2;
+
+    if (segLen == 0) return;
+
+    if (tv == Horizontal)
+        addVertex(g, id1, pos1, segLen);
+    else if (tv == Vertical)
+        addVertex(g, id2, pos2, segLen);
+    else if (tv == Diagonal)
+        addEdge(g, addVertex(g, id1, pos1, segLen), addVertex(g, id2, pos2, segLen));
+}
+
+// ----------------------------------------------------------------------------
+// Function _alignTracePrint()                            [String<Fragment<> >]
+// ----------------------------------------------------------------------------
+
+// TODO(holtgrew): Are TSequenceH and TSequenceV used *anywhere*.
+
+template <typename TFragment, typename TSequenceH, typename TSequenceV, typename TId, typename TPos, typename TTraceValue>
+inline void
+_alignTracePrint(String<TFragment>& matches,
+                 TSequenceH const &,
+                 TSequenceV const &,
+                 TId const id1,
+                 TPos const pos1,
+                 TId const id2,
+                 TPos const pos2,
+                 TPos const seqLen,
+                 TTraceValue const tv)
+{
+    // Only the diagonal case
+    if ((seqLen) && (tv == 0))
+        appendValue(matches, TFragment(id1, pos1, id2, pos2, seqLen), Generous());
+}
+
+}  // namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...

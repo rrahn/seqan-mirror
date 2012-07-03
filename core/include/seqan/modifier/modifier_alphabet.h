@@ -94,7 +94,12 @@ inline unsigned ordValue(ModifiedAlphabet<THost,TSpec> const &c)
 	return ordValue(static_cast<THost const &>(c));
 }
 
-
+template <typename TStream, typename THost, typename TSpec>
+TStream & operator<<(TStream & stream, ModifiedAlphabet<THost, TSpec> const & c)
+{
+    stream << convert<char>(c);
+    return stream;
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // comparisons

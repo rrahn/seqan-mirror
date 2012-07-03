@@ -371,7 +371,7 @@ inline void _printRead(
 	}
 	if (x < xEnd && lastWasGap != -1)
 	{
-		if (_unclippedLength(readGaps) == endPosition(readGaps))
+		if (static_cast<int>(_unclippedLength(readGaps)) == static_cast<int>(endPosition(readGaps)))
 		{
 			if (alignedRead.beginPos < alignedRead.endPos)
 			{

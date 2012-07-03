@@ -385,6 +385,8 @@ def main(source_base, binary_base):
     # Execute the tests.
     failures = 0
     for conf in conf_list:
+        print ' '.join(['mason'] + conf.args),
+        sys.stdout.flush()
         res = app_tests.runTest(conf)
         # Output to the user.
         print ' '.join(['mason'] + conf.args),

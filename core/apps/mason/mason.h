@@ -707,6 +707,11 @@ int simulateReads(TOptions options, CharString referenceFilename, TReadsTypeTag 
             std::cerr << "Could not open Sam file \"" << options.samFile << "\"" << std::endl;
             return 1;
         }
+
+        AlignedReadLayout layout;
+        layoutAlignment(layout, fragmentStore);
+        printAlignment(std::cout, Raw(), layout, fragmentStore, 0, 0, 1000, 0, 100);
+	
         write(fstrm, fragmentStore, Sam());
     }
     return 0;

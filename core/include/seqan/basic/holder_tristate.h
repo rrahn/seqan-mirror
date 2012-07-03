@@ -777,7 +777,6 @@ After this function, $object$ does not depends from any other entity outside of 
 like a @Function.source@ or a @Function.host@, and @Function.dependent.dependent(object)@ returns $false$ 
 ..see:Function.source
 ..see:Function.host
-..see:Function.createSource
 ..see:Function.create
 ..include:seqan/basic.h
 */
