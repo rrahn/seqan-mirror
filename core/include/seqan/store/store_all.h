@@ -1816,8 +1816,6 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 ////        std::cout << contigGaps << std::endl;
 ////        std::cout << readGaps << std::endl;
 ////        std::cout << std::endl;
-        std::cout << "currentAlignment:" << std::endl;
-        std::cout << align;
 ////        std::cout << std::endl;
 ////        std::cout << std::endl;
 ////        std::cout << std::endl;
@@ -1921,8 +1919,7 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 		for (; !atEnd(cIt) && !atEnd(it1); goNext(cIt), goNext(rIt))
 		{
 			bool isGapContig = isGap(cIt);
-			bool isGapLocalContig = (beginLocalContigGaps > 0) ? true : isGap(it1);
-			if (isGapContig != isGapLocalContig)
+			if (isGapContig != isGap(it1))
 			{
 				if (isGapContig)
 				{
@@ -1976,10 +1973,7 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 				// copy gaps from alignment
 				insertGaps(rIt, 1);
 			}
-            if (beginLocalContigGaps == 0)
-                goNext(it1);
-            else
-                beginLocalContigGaps -= 1;
+            goNext(it1);
 			goNext(it2);
 		}
 
@@ -2010,6 +2004,11 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 //		if (store.readNameStore[(*it).readId] == "read3305")
 //			return;
 	}
+
+    // AlignedReadLayout layout;
+    // layoutAlignment(layout, store);
+    // std::cerr << "(int)length(store.contigStore[0].gaps) == " << (int)length(store.contigStore[0].gaps) << '\n';
+    // printAlignment(std::cout, Raw(), layout, store, 0, -10, (int)(length(store.contigStore[0].seq) * 1.1), 0, 40);
 }
 
 /**

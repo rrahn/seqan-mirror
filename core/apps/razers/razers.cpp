@@ -262,7 +262,7 @@ int main(int argc, const char *argv[])
 	options.reverse = false;
 	
 	CommandLineParser parser;
-	string rev = "$Revision$";
+	string rev = "$Revision: 11182 $";
 	addVersionLine(parser, "RazerS version 1.1 20100618 [" + rev.substr(11, 4) + "]");
 
 	//////////////////////////////////////////////////////////////////////////////

@@ -189,8 +189,11 @@ bamRecordToAlignment(Align<TSource, TSpec> & result, TReference & reference, Bam
 
     unsigned len = record.pos + getAlignmentLengthInRef(record) - countPaddings(record.cigar);
 
-    setSource(row(result, 0), reference, record.pos, len);
+    setSource(row(result, 0), reference);
+    setClippedBeginPosition(row(result, 0), record.pos + len);
+    setClippedBeginPosition(row(result, 0), record.pos);
     cigarToGapAnchorContig(record.cigar, row(result, 0));
+
     assignSource(row(result, 1), record.seq);
     cigarToGapAnchorRead(record.cigar, row(result, 1));
 }

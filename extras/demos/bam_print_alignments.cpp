@@ -47,6 +47,15 @@
 
 #if SEQAN_HAS_ZLIB
 
+void trimSeqHeaderToId(seqan::CharString & header)
+{
+    unsigned i = 0;
+    for (; i < length(header); ++i)
+        if (isspace(header[i]))
+            break;
+    resize(header, i);
+}
+
 int main(int argc, char const ** argv)
 {
     using namespace seqan;
@@ -71,6 +80,8 @@ int main(int argc, char const ** argv)
     RecordReader<std::fstream, SinglePass<> > reader(inSeq);
     if (read2(refNameStore, seqs, reader, Fasta()) != 0)
         return 1;
+    for (unsigned i = 0; i < length(refNameStore); ++i)
+        trimSeqHeaderToId(refNameStore[i]);
     
     // Open BGZF stream.
     std::cerr << "Opening BAM " << argv[2] << std::endl;

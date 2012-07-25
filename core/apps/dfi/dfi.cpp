@@ -643,7 +643,7 @@ int main(int argc, const char *argv[])
 	bool optionMaximal = false;
 		
 	CommandLineParser parser;
-	string rev = "$Revision$";
+	string rev = "$Revision: 10782 $";
 	addVersionLine(parser, "Dfi version 2.0 20100107 [" + rev.substr(11, 4) + "]");
 
 	//////////////////////////////////////////////////////////////////////////////

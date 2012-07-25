@@ -244,8 +244,8 @@ getCigarString(
 	char op, lastOp = ' ';
 	unsigned numOps = 0;
 
-	std::cout << "gaps1\t" << gaps1 << std::endl;
-	std::cout << "gaps2\t" << gaps2 << "\t" << clippedBeginPosition(gaps2) << std::endl;
+	// std::cout << "gaps1\t" << gaps1 << std::endl;
+	// std::cout << "gaps2\t" << gaps2 << "\t" << clippedBeginPosition(gaps2) << std::endl;
 	for (; !atEnd(it1) && !atEnd(it2); goNext(it1), goNext(it2))
 	{
 		if (isGap(it1))
@@ -329,19 +329,11 @@ getCigarString(
         TGaps2 &gaps2,
         TThresh splicedGapThresh)
 {
-<<<<<<< .mine
 	typename Iterator<TGaps1>::Type it1 = begin(gaps1);
 	typename Iterator<TGaps2>::Type it2 = begin(gaps2);
 	clear(cigar);
 	char op = '?', lastOp = ' ';
 	unsigned numOps = 0;
-=======
-    typename Iterator<TGaps1>::Type it1 = iter(gaps1, 0);
-    typename Iterator<TGaps2>::Type it2 = iter(gaps2, 0);
-    clear(cigar);
-    char op = '?', lastOp = ' ';
-    unsigned numOps = 0;
->>>>>>> .r12239
 
 //  std::cout << gaps1 << std::endl;
 //  std::cout << gaps2 << std::endl;
@@ -439,7 +431,7 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
     // if (i == 4)
     //     printf("It's it!\n");
     // std::cerr << "read gaps:  " << readGaps << std::endl;
-    // std::cerr << "contig gaps:" << contigGaps2 << std::endl;
+    // std::cerr << "contig gaps:" << contigGaps << std::endl;
     
     getCigarString(cigar, contigGaps, readGaps);
     getMDString(md, contigGaps, readGaps);
@@ -945,7 +937,7 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
         TChar & c,
         Sam)
     {
-//IOREV _nodoc_ documentation in code, but unclear
+//IOREV _nodoc_ docusmentation in code, but unclear
         // create dummy entries in Sam specific aligned read quality store and aligned read tag store
         // is needed so the ID in the aligned store can be use to access the other stores
         // even if there exists previous entries without
@@ -1419,11 +1411,11 @@ alignAndGetCigarString(TCigar &cigar, TMDString &md, TContig &contig, TReadSeq &
             int errors = -1;
             if (alignedId < length(store.alignQualityStore))
                 errors = store.alignQualityStore[alignedId].errors;
-            std::cout << store.readNameStore[readId] << "\n";
+            // std::cout << store.readNameStore[readId] << "\n";
             alignAndGetCigarString(cigar, md, store.contigStore[(*it).contigId], readSeq, *it, errors, doAlign);
             _streamWrite(target, cigar);
-			_streamWrite(std::cout, cigar);
-            std::cout << "\n";
+			// _streamWrite(std::cout, cigar);
+            // std::cout << "\n";
             _streamPut(target, '\t');
             
             // <mrnm>

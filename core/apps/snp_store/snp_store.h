@@ -3467,7 +3467,7 @@ realignReferenceToReadProfile(TFragmentStore & fragmentStore,
     //// Debug code
     Graph<Alignment<TStringSet, void, WithoutEdgeId> > g3(pairSet3);
     //int sc3 = 
-    globalAlignment(g3, consScore3, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, BandedGotoh());
+    globalAlignment(g3, consScore3, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, Gotoh());
     //std::cout << sc3 << std::endl;
     //std::cout << g3 << std::endl;
 
@@ -3737,13 +3737,8 @@ realignReferenceToDiploidConsensusProfile(TFragmentStore & fragmentStore,
 //    std::cout << "leftDiag="<< leftDiag << std::endl;
 //    std::cout << "rightDiag="<< rightDiag << std::endl;
     // reference can be aligned to gaps at the ends, diploidConsensus needs to be fully aligned
-<<<<<<< .mine
-    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, Gotoh());
-=======
-//    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,true,true,false>(), leftDiag, rightDiag, BandedGotoh());
-    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,false,false,false>(), _max(leftDiag, -1 * (int) length(refProfile)), _min(rightDiag, (int) length(diploidConsensus)), BandedGotoh());
+    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,false,false,false>(), _max(leftDiag, -1 * (int) length(refProfile)), _min(rightDiag, (int) length(diploidConsensus)), Gotoh());
     
->>>>>>> .r12239
     //if(options.realignAddBorder == 0)
     //    globalAlignment(fragments, pairSet, consScore, AlignConfig<false,false,false,false>(), leftDiag, rightDiag, Gotoh());
 
