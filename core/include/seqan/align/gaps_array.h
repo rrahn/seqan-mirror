@@ -286,6 +286,47 @@ iter(Gaps<TSequence, ArrayGaps> const & gaps, TPosition pos, Tag<TTag> const /*t
     return TIter(gaps, pos, Position_());
 }
 
+// -----------------------------------------------------------------------
+// Function _unclippedLength()
+// -----------------------------------------------------------------------
+
+template <typename TSequence>
+inline typename Size<Gaps<TSequence, ArrayGaps> >::Type
+_unclippedLength(Gaps<TSequence, ArrayGaps> const & gaps)
+{
+    typedef Gaps<TSequence, ArrayGaps> TGaps;
+    typedef typename Size<TGaps>::Type TSize;
+
+    TSize unclippedLength = 0;
+    for (unsigned i = 0; i < length(gaps._array); ++i)
+    {
+        unclippedLength += gaps._array[i];
+    }
+    return unclippedLength;
+}
+
+// -----------------------------------------------------------------------
+// Function _findBucket()
+// -----------------------------------------------------------------------
+
+template <typename TSource, typename TPosition>
+inline typename Position<Gaps<TSource, ArrayGaps> >::Type
+_findBucket(Gaps<TSource, ArrayGaps> const & gaps, TPosition const & pos)
+{
+    typedef Gaps<TSource, ArrayGaps> TGaps;
+    typedef typename Size<TGaps>::Type TSize;
+
+    TPosition unclippedLength = 0;
+    for (unsigned i = 0; i < length(gaps._array); ++i)
+    {
+        unclippedLength += gaps._array[i];
+        if (pos < unclippedLength)
+        {
+            return i;
+        }
+    }
+    return length(gaps._array); // if no bucket found, than return unvalid id
+}
 // ----------------------------------------------------------------------------
 // Function length()
 // ----------------------------------------------------------------------------
@@ -306,13 +347,7 @@ template <typename TSequence>
 inline typename Size<Gaps<TSequence, ArrayGaps> >::Type
 unclippedLength(Gaps<TSequence, ArrayGaps> const & gaps)
 {
-    typedef typename Size<Gaps<TSequence, ArrayGaps> >::Type TSize;
-
-    TSize result = 0;
-    for (unsigned i = 0; i < length(gaps._array); ++i)
-        result += gaps._array[i];
-
-    return result;
+    return _unclippedLength(gaps);
 }
 
 // ----------------------------------------------------------------------------
@@ -716,6 +751,9 @@ setClippedBeginPosition(Gaps<TSequence, ArrayGaps> & gaps, TPosition unclippedVi
 {
     gaps._sourceBeginPos = toSourcePosition(gaps, unclippedViewPosition - clippedBeginPosition(gaps));
     gaps._clippingBeginPos = unclippedViewPosition;
+    // TODO (rmaerker): should we better use clippedViewPosition
+//    gaps._sourceBeginPos = toSourcePosition(gaps, relativeViewPosition);
+//    gaps._clippingBeginPos = relativeViewPosition + clippedBeginPosition(gaps); // need to set absolute value
 }
 
 // ----------------------------------------------------------------------------
@@ -727,9 +765,10 @@ inline void
 setClippedEndPosition(Gaps<TSequence, ArrayGaps> & gaps, TPosition unclippedViewPosition)
 {
     gaps._sourceEndPos = toSourcePosition(gaps, unclippedViewPosition - clippedBeginPosition(gaps));
-    //if (isGap(gaps, unclippedViewPosition - clippedBeginPosition(gaps)))
-    //    gaps._sourceEndPos += 1;
     gaps._clippingEndPos = unclippedViewPosition;
+    // TODO (rmaerker): should we better use clippedViewPosition
+//    gaps._sourceEndPos = toSourcePosition(gaps, relativeViewPosition);
+//    gaps._clippingEndPos = relativeViewPosition + clippedBeginPosition(gaps);
 }
 
 // ----------------------------------------------------------------------------

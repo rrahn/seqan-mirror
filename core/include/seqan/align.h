@@ -93,19 +93,41 @@
 // Alignment Algorithm Implementations.
 // ============================================================================
 
-// The tags have to be available everywhere so we define them centrally.
-#include <seqan/align/alignment_algorithm_tags.h>
+// Defines all general tags and structures that are used for the alignment
+// algorithms.
+#include <seqan/align/alignment_base.h>
 
-// The global alignment algorithm are implemented in a straightforward fashion:
-// We simply have unbanded and banded variants of both the Needleman-Wunsch and
-// Gotoh's algorithm.
-#include <seqan/align/global_alignment_needleman_wunsch_impl.h>
-#include <seqan/align/global_alignment_banded_needleman_wunsch_impl.h>
-#include <seqan/align/global_alignment_gotoh_impl.h>
-#include <seqan/align/global_alignment_banded_gotoh_impl.h>
+// The standard dp algorithms are unified in a single implementation of
+// the alignment algorithm. We need different structures to distinguish
+// between different properties of the standard dp algorithms.
+// The following algorithms are consolidated:
+// * Needleman-Wunsch and Banded Needleman-Wunsch,
+// * Gotoh and Banded Gotoh,
+// * Smith-Waterman and Banded Smith-Waterman,
+// * Waterman-Eggert and Banded Waterman-Eggert TODO(rmaerker): Write me!
 
-// Also, we have an implementation of Hirschberg's algorithm to compute
-// alignments.
+// Operations, structs and the implementation of the DP grid.
+#include <seqan/align/alignment_dp_value.h>
+#include <seqan/align/alignment_dp_band.h>
+#include <seqan/align/alignment_dp_matrix.h>
+#include <seqan/align/alignment_dp_formula.h>
+#include <seqan/align/alignment_dp_tracker.h>
+#include <seqan/align/alignment_dp_manager.h>
+#include <seqan/align/alignment_dp_impl.h>
+#include <seqan/align/alignment_dp.h>
+
+// Operations and structures for computing the trace back and
+// supporting different structures to store the alignment.
+#include <seqan/align/alignment_traceback_tracesegment.h>
+#include <seqan/align/alignment_traceback_impl.h>
+#include <seqan/align/alignment_traceback_adaptor.h>
+#include <seqan/align/alignment_traceback.h>
+
+// The following algorithms could not be unified, so we list them
+// separately.
+
+// The Hirschberg algorithm computes an alignment including the trace back in
+// linear space.
 #include <seqan/align/global_alignment_hirschberg_impl.h>
 
 // The implementations of Myers' bitvector algorithm for alignments can only
@@ -114,16 +136,12 @@
 #include <seqan/align/global_alignment_myers_impl.h>
 #include <seqan/align/global_alignment_myers_hirschberg_impl.h>
 
+// TODO(rmaerker): unify like other dp algorithms
 // Implementations of the local alignment algorithms with declumping.  We also
 // use them for the localAlignment() calls and return the best local alignment
 // only.
 #include <seqan/align/local_alignment_waterman_eggert_impl.h>
 #include <seqan/align/local_alignment_banded_waterman_eggert_impl.h>
-
-// We carry around this implementation of Smith-Waterman because it supports
-// aligning into fragment strings and alignment graphs.  Eventually, it could
-// go away if Waterman-Eggert supports them.
-#include <seqan/align/local_alignment_smith_waterman_impl.h>
 
 // ============================================================================
 // Alignment Algorithm Interfaces

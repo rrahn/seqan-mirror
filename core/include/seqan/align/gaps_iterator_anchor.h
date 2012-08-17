@@ -264,9 +264,14 @@ countGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 	typedef typename Size<TGaps>::Type TGapsSize;
 
 	if (!isGap(me))
-		return 0;
+	{
+	    return 0;
+	}
+
     if (me.nextAnchor.gapPos > me.viewEnd.gapPos)
+    {
         return me.viewEnd.gapPos - me.current.gapPos;
+    }
     return me.nextAnchor.gapPos - me.current.gapPos;
 }
 
@@ -278,8 +283,16 @@ template <typename TGaps, typename TGapAnchors>
 inline typename Size<TGaps>::Type
 countCharacters(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 {
+    typedef typename Position<TGaps>::Type TPosition;
     if (isGap(me))
+    {
         return 0;
+    }
+
+    if (me.viewEnd.gapPos < (me.current.gapPos + me.nextAnchor.seqPos - me.current.seqPos))
+    {
+        return me.viewEnd.gapPos - me.current.gapPos;
+    }
     return me.nextAnchor.seqPos - me.current.seqPos;
 }
 

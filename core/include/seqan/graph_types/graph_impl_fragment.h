@@ -169,6 +169,15 @@ public:
 
 };
 
+template <typename TStream, typename TSize, typename TSpec>
+inline TStream &
+operator<<(TStream & stream, Fragment<TSize, ExactFragment<TSpec> > const & fragment)
+{
+    stream << fragment.seqId1 << ": [" << fragment.begin1 << "," << fragment.begin1 + fragment.len - 1 << "] - ";
+    stream << fragment.seqId2 << ": [" << fragment.begin2 << "," << fragment.begin2 + fragment.len - 1<< "]";
+    return stream;
+}
+
 template<typename TSize, typename TSpec>
 inline bool
 operator==(Fragment<TSize, ExactFragment<TSpec> > const & left,

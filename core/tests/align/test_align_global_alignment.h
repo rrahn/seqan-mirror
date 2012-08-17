@@ -81,7 +81,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_top_left_right_bot
 
         SEQAN_ASSERT_EQ(ssH.str(), "AT-G-T");
         SEQAN_ASSERT_EQ(ssV.str(), "ATAGAT");
-        // std::cerr << align << "\n";
+//         std::cerr << align << "\n";
     }
 
     // Alignment with both leading and trailing gaps in one row.
@@ -154,7 +154,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_notop_left_noright
         Score<int, Simple> scoringScheme(2, -1, -1);
 
         int score = globalAlignment(align, scoringScheme, alignConfig, NeedlemanWunsch());
-        // std::cerr << align << "\n";
+//        std::cerr << align << "\n";
 
         SEQAN_ASSERT_EQ(score, 14);
 
@@ -506,7 +506,6 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_fragments_gaps_free_notop_left_nor
         TFragmentString fragments;
 
         int score = globalAlignment(fragments, strings, scoringScheme, alignConfig, NeedlemanWunsch());
-
         SEQAN_ASSERT_EQ(score, 14);
 
         // TODO(holtgrew): Implement operator<< for Fragment<>?
@@ -617,7 +616,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_align_gaps_free_notop_left_noright
         Score<int, Simple> scoringScheme(2, -1, -1, -4);
 
         int score = globalAlignment(align, scoringScheme, alignConfig, Gotoh());
-        // std::cerr << align << "\n";
+//         std::cerr << align << "\n";
 
         SEQAN_ASSERT_EQ(score, 8);
 

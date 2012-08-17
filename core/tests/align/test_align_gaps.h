@@ -936,9 +936,10 @@ void testAlignGapsClippingGapsCenter(TGapsSpec const & /*spec*/)
     // 01234
     // AC-GT
     //  XXX
-    
+
     setClippedBeginPosition(gaps, 1);
     setClippedEndPosition(gaps, 4);
+
 
     SEQAN_ASSERT_EQ(length(gaps), 3u);
     SEQAN_ASSERT_EQ(unclippedLength(gaps), 5u);
@@ -982,6 +983,7 @@ void testAlignGapsClippingGapsLeading(TGapsSpec const & /*spec*/)
     setClippedBeginPosition(gaps, 2);
     setClippedEndPosition(gaps, 6);
 
+
     SEQAN_ASSERT_EQ(length(gaps), 4u);
     SEQAN_ASSERT_EQ(unclippedLength(gaps), 6u);
 
@@ -1024,9 +1026,9 @@ void testAlignGapsClippingGapsTrailing(TGapsSpec const & /*spec*/)
     // XXXX
     
     insertGaps(gaps, 3, 2);
-
-    setClippedBeginPosition(gaps, 0);
-    setClippedEndPosition(gaps, 4);
+                                      // 012345
+    setClippedBeginPosition(gaps, 0); // ACG--T
+    setClippedEndPosition(gaps, 4);   // ACG-
 
     SEQAN_ASSERT_EQ(length(gaps), 4u);
     SEQAN_ASSERT_EQ(unclippedLength(gaps), 6u);

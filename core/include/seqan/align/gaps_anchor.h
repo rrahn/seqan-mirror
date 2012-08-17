@@ -82,6 +82,8 @@ inline void _reinitAnchorGaps(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps);
 ..param.anchors:The sequence of gap anchors, e.g. the $gaps$ members in $Class.ReadStoreElement$ or $Class.ContigStoreElement$.
 */
 
+// TODO (rmaerker): bad design, better to define the string in the class not as template parameter.
+// templates for a class should be used for specialization purposes only not for defining the types of the members
 template <typename TGapAnchors = String<GapAnchor<unsigned> > >
 struct AnchorGaps
 {};
@@ -103,6 +105,7 @@ public:
     // Member Variables
     // -----------------------------------------------------------------------
 
+    // TODO (rmaerker): bad variable names, should be camel case see Seqan StyleGuide
     Holder<TSource>     data_source;
     Holder<TGapAnchors> data_gaps;
     int                 data_viewCutBegin;  // how many alignment chars should be clipped at the beginning (can be negative too)
@@ -112,6 +115,7 @@ public:
     // Constructors
     // -----------------------------------------------------------------------
 
+    // TODO (rmaerker): missing default initialization of data_source and data_gaps
     Gaps() :
         data_viewCutBegin(0), data_viewCutEnd(0)
     {
@@ -122,6 +126,7 @@ public:
     {
     }
 
+    // TODO (rmaerker): initialization of data_source missing
     Gaps(TGapAnchors & anchors) :
         data_gaps(anchors), data_viewCutBegin(0), data_viewCutEnd(0)
     {
@@ -732,6 +737,9 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
 // Function positionSeqToGap()
 // ----------------------------------------------------------------------------
 
+// TODO (rmaerker): why is this not a private function? only use toViewPosition and toSourcePosition to
+// be consistent with the interface with other GapStructures
+
 /**
 .Function.positionSeqToGap
 ..cat:Fragment Store
@@ -826,22 +834,29 @@ toSourcePosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps, TPositi
 // Function setClippedBeginPosition()
 // ----------------------------------------------------------------------------
 
+// TODO (rmaerker): why unclipped View Position -> Have to set the relative view position (clipped).
 template <typename TSequence, typename TGapAnchors, typename TPosition>
 inline void
 setClippedBeginPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps, TPosition unclippedViewPosition)
 {
     gaps.data_viewCutBegin = unclippedViewPosition;
+    // TODO (rmaerker): should we better use clippedViewPosition
+//    gaps.data_viewCutBegin += clippedViewPosition;
 }
 
 // ----------------------------------------------------------------------------
 // Function setClippedEndPosition()
 // ----------------------------------------------------------------------------
 
+// TODO (rmaerker): why unclipped View Position -> Have to set the relative view position (clipped).
+
 template <typename TSequence, typename TGapAnchors, typename TPosition>
 inline void
 setClippedEndPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps, TPosition unclippedViewPosition)
 {
     gaps.data_viewCutEnd = _unclippedLength(gaps) - unclippedViewPosition;
+    // TODO (rmaerker): should we better use clippedViewPosition
+//    gaps.data_viewCutEnd = _unclippedLength(gaps) - (gaps.data_viewCutBegin + clippedViewPosition);
 }
 
 // ----------------------------------------------------------------------------

@@ -80,6 +80,12 @@ scoreGapOpenHorizontal(
     return scoreGapOpen(me);
 }
 
+template <typename TValue, typename TSpec>
+inline TValue
+scoreGapOpenHorizontal(Score<TValue, TSpec> const & me) {
+    SEQAN_CHECKPOINT;
+    return scoreGapOpen(me);
+}
 
 /**
 .Function.scoreGapOpenVertical
@@ -96,6 +102,13 @@ scoreGapOpenVertical(
     TPos2,
     TSeq1 const &,
     TSeq2 const &) {
+    SEQAN_CHECKPOINT;
+    return scoreGapOpen(me);
+}
+
+template <typename TValue, typename TSpec>
+inline TValue
+scoreGapOpenVertical(Score<TValue, TSpec> const & me) {
     SEQAN_CHECKPOINT;
     return scoreGapOpen(me);
 }
@@ -120,6 +133,13 @@ scoreGapExtendHorizontal(
     return scoreGapExtend(me);
 }
 
+template <typename TValue, typename TSpec>
+inline TValue
+scoreGapExtendHorizontal(Score<TValue, TSpec> const & me) {
+    SEQAN_CHECKPOINT;
+    return scoreGapExtend(me);
+}
+
 
 /**
 .Function.scoreGapExtendVertical
@@ -140,6 +160,13 @@ scoreGapExtendVertical(
     return scoreGapExtend(me);
 }
 
+template <typename TValue, typename TSpec>
+inline TValue
+scoreGapExtendVertical(Score<TValue, TSpec> const & me)
+{
+    SEQAN_CHECKPOINT;
+    return scoreGapExtend(me);
+}
 
 /**
 .Function.scoreGapHorizontal

@@ -68,6 +68,8 @@ public:
     // The following index and position members must be mutable since the
     // insertion and deletion of gaps does not modify the iterator conceptually.
 
+    // TODO (rmaerker): bad name for pointer -> variable should contain indication for pointer type
+    // like _containerPtr
     // Pointer to the iterated container / gaps object.
     TGaps *     _container;
     // Index in the bucket array of the gaps object.
@@ -235,6 +237,33 @@ position(Iter<TGaps, GapsIterator<ArrayGaps> > const & it)
 }
 
 // ----------------------------------------------------------------------------
+// Function _getBucketSize()
+// ----------------------------------------------------------------------------
+
+template <typename TGaps>
+inline typename Size<TGaps>::Type
+_getBucketSize(Iter<TGaps, GapsIterator<ArrayGaps> > const & it)
+{
+    typedef typename Position<TGaps>::Type TPosition;
+    typedef typename Size<TGaps>::Type TSize;
+    // check if the clippingEndPos lies within this bucket
+    if (static_cast<TPosition>(it._bucketIndex) == static_cast<TPosition>(_findBucket(*it._container,
+                                                                                      it._container->_clippingEndPos)))
+    {
+        TSize remainingBucketCounts = 0;
+        for (TPosition i = static_cast<TPosition>(it._bucketIndex + 1);
+                i < static_cast<TPosition>(length(it._container->_array)); ++i)
+        {
+            remainingBucketCounts += it._container->_array [i];
+        }
+        return it._container->_array [it._bucketIndex] - (_unclippedLength(*it._container)
+                - it._container->_clippingEndPos - remainingBucketCounts);
+    }
+    return it._container->_array[it._bucketIndex];
+}
+
+
+// ----------------------------------------------------------------------------
 // Function countGaps()
 // ----------------------------------------------------------------------------
 
@@ -244,8 +273,7 @@ countGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it)
 {
     if (!isGap(it) || atEnd(it))
         return 0;  // Not on a gap or at end, no gap here.
-
-    return it._container->_array[it._bucketIndex] - it._bucketOffset;
+    return _getBucketSize(it) - it._bucketOffset;
 }
 
 // ----------------------------------------------------------------------------
@@ -258,8 +286,7 @@ countCharacters(Iter<TGaps, GapsIterator<ArrayGaps> > const & it)
 {
     if (isGap(it) || atEnd(it))
         return 0;  // On a gap or at end, no characters here.
-
-    return it._container->_array[it._bucketIndex] - it._bucketOffset;
+    return _getBucketSize(it) - it._bucketOffset;
 }
 
 // ----------------------------------------------------------------------------

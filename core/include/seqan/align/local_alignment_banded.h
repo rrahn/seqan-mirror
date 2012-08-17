@@ -66,18 +66,29 @@ TScoreValue localAlignment(Align<TSequence, TAlignSpec> & align,
                            int lowerDiag,
                            int upperDiag)
 {
+    typedef Align<TSequence, TAlignSpec> TAlign;
+    typedef typename Size<TAlign>::Type TSize;
+    typedef typename Position<TAlign>::Type TPosition;
+    typedef TraceSegment<TPosition, TSize> TTraceSegment;
+
     SEQAN_ASSERT_EQ(length(rows(align)), 2u);
 
-	clearGaps(row(align, 0));
-	clearGaps(row(align, 1));
-    clearClipping(row(align, 0));
-    clearClipping(row(align, 1));
+    String<TTraceSegment> trace;
 
-	LocalAlignmentFinder<TScoreValue> finder;
-	_initLocalAlignmentFinder(source(row(align, 0)), source(row(align, 1)), finder, BandedWatermanEggert(), lowerDiag, upperDiag);
-	finder.needReinit = false;
+    TScoreValue res = _runAlignment(trace, source(row(align, 0)), source(row(align, 1)), scoringScheme, AlignConfig<>(),
+                            SmithWaterman(), Band<BandSwitchedOn<> >(lowerDiag, upperDiag), TracebackSwitchedOn());
+    adapt(row(align,0), row(align,1), trace);
+    return res;
+    //  clearGaps(row(align, 0));
+    //  clearGaps(row(align, 1));
+    //    clearClipping(row(align, 0));
+    //    clearClipping(row(align, 1));
 
-	return _localAlignment(finder, row(align, 0), row(align, 1), scoringScheme, 0, lowerDiag, upperDiag, BandedWatermanEggert());
+//	LocalAlignmentFinder<TScoreValue> finder;
+//	_initLocalAlignmentFinder(source(row(align, 0)), source(row(align, 1)), finder, BandedWatermanEggert(), lowerDiag, upperDiag);
+//	finder.needReinit = false;
+//
+//	return _localAlignment(finder, row(align, 0), row(align, 1), scoringScheme, 0, lowerDiag, upperDiag, BandedWatermanEggert());
 }
 
 // ----------------------------------------------------------------------------
@@ -93,16 +104,55 @@ TScoreValue localAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                            int lowerDiag,
                            int upperDiag)
 {
-	clearGaps(gapsH);
-	clearGaps(gapsV);
-    clearClipping(gapsH);
-    clearClipping(gapsV);
+    typedef typename Size<TSequenceH>::Type TSize;
+    typedef typename Position<TSequenceH>::Type TPosition;
+    typedef TraceSegment<TPosition, TSize> TTraceSegment;
 
-	LocalAlignmentFinder<TScoreValue> finder;
-	_initLocalAlignmentFinder(source(gapsH), source(gapsV), finder, BandedWatermanEggert(), lowerDiag, upperDiag);
-	finder.needReinit = false;
+    String<TTraceSegment> trace;
 
-	return _localAlignment(finder, gapsH, gapsV, scoringScheme, 0, lowerDiag, upperDiag, BandedWatermanEggert());
+    TScoreValue res = _runAlignment(trace, source(gapsH), source(gapsV), scoringScheme, AlignConfig<>(),
+                            SmithWaterman(), Band<BandSwitchedOn<> >(lowerDiag, upperDiag), TracebackSwitchedOn());
+    adapt(gapsH, gapsV, trace);
+    return res;
+//	clearGaps(gapsH);
+//	clearGaps(gapsV);
+//    clearClipping(gapsH);
+//    clearClipping(gapsV);
+//
+//	LocalAlignmentFinder<TScoreValue> finder;
+//	_initLocalAlignmentFinder(source(gapsH), source(gapsV), finder, BandedWatermanEggert(), lowerDiag, upperDiag);
+//	finder.needReinit = false;
+//
+//	return _localAlignment(finder, gapsH, gapsV, scoringScheme, 0, lowerDiag, upperDiag, BandedWatermanEggert());
+}
+
+// ----------------------------------------------------------------------------
+// Function localAlignment()                      [banded, Graph<Alignment<> >]
+// ----------------------------------------------------------------------------
+
+// Full interface.
+
+template <typename TStringSet, typename TCargo, typename TGraphSpec,
+          typename TScoreValue, typename TScoreSpec>
+TScoreValue localAlignment(Graph<Alignment<TStringSet, TCargo, TGraphSpec> > & alignmentGraph,
+                           Score<TScoreValue, TScoreSpec> const & scoringScheme,
+                           int lowerDiag,
+                           int upperDiag)
+{
+    typedef Graph<Alignment<TStringSet, TCargo, TGraphSpec> > TGraph;
+    typedef typename Size<TGraph>::Type TSize;
+    typedef typename Position<TGraph>::Type TPosition;
+    typedef TraceSegment<TPosition, TSize> TTraceSegment;
+
+    String<TTraceSegment> trace;
+
+    TScoreValue res = _runAlignment(trace, value(stringSet(alignmentGraph), 0), value(stringSet(alignmentGraph), 1),
+                            scoringScheme, AlignConfig<>(), SmithWaterman(),
+                            Band<BandSwitchedOn<> >(lowerDiag, upperDiag), TracebackSwitchedOn());
+
+    adapt(alignmentGraph, positionToId(stringSet(alignmentGraph), 0), positionToId(stringSet(alignmentGraph), 1),
+          trace);
+    return res;
 }
 
 // ----------------------------------------------------------------------------
@@ -120,13 +170,17 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
                            int lowerDiag,
                            int upperDiag)
 {
-    // TODO(holtgrew): This is currently not supported.
-    (void)fragmentString;
-    (void)strings;
-    (void)scoringScheme;
-    (void)lowerDiag;
-    (void)upperDiag;
-    SEQAN_FAIL("Write me!");
+    typedef String<Fragment<TSize, TFragmentSpec>, TStringSpec> TFragments;
+    typedef typename Position<TFragments>::Type TPosition;
+    typedef TraceSegment<TPosition, TSize> TTraceSegment;
+
+    String<TTraceSegment> trace;
+
+    TScoreValue res = _runAlignment(trace, value(strings, 0), value(strings, 1), scoringScheme, AlignConfig<>(),
+                            SmithWaterman(), Band<BandSwitchedOn<> >(lowerDiag, upperDiag), TracebackSwitchedOn());
+
+    adapt(fragmentString, positionToId(strings, 0), positionToId(strings, 1), trace);
+    return res;
 }
 
 }  // namespace seqan

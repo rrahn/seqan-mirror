@@ -73,7 +73,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_align)
         ssV << row(align, 1);
 
         SEQAN_ASSERT_EQ(ssH.str(), "CTTAAGCT");
-        SEQAN_ASSERT_EQ(ssV.str(), "CTTA-GCT");
+        SEQAN_ASSERT_EQ(ssV.str(), "CTT-AGCT");
     }
 }
 
@@ -99,7 +99,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_gaps)
         ssV << gapsV;
 
         SEQAN_ASSERT_EQ(ssH.str(), "CTTAAGCT");
-        SEQAN_ASSERT_EQ(ssV.str(), "CTTA-GCT");
+        SEQAN_ASSERT_EQ(ssV.str(), "CTT-AGCT");
     }
 }
 
@@ -135,9 +135,9 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_graph)
         std::stringstream expectedSS;
         expectedSS << "Alignment matrix:\n"
                    << "      0     .    :    .    :    .   \n"
-                   << "        ----GGGGCTTAAGCT------TGGGG\n"
+                   << "        GGGG----CTTAAGCTTGGGG------\n"
                    << "                ||| ||||           \n"
-                   << "        AAAA----CTT-AGCTCTAAAA-----\n\n\n";
+                   << "        ----AAAACTT-AGCT-----CTAAAA\n\n\n";
 
         SEQAN_ASSERT_EQ(ss.str(), expectedSS.str());
     }
@@ -147,7 +147,30 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_fragment)
 {
     using namespace seqan;
 
-    // TODO(holtgrew): Test after this is written.
+    typedef StringSet<Dna5String> TStringSet;
+    typedef Fragment<unsigned> TFragment;
+    typedef String<TFragment>  TFragmentString;
+
+    {
+        Dna5String strH("GGGGCTTAAGCTTGGGG");
+        Dna5String strV("AAAACTTAGCTCTAAAA");
+
+        TStringSet strings;
+        appendValue(strings, strH);
+        appendValue(strings, strV);
+
+        SimpleScore scoringScheme(2, -1, -2, -2);
+
+        TFragmentString fragments;
+
+        int score = localAlignment(fragments, strings, scoringScheme);
+
+        SEQAN_ASSERT_EQ(score, 12);
+
+        SEQAN_ASSERT_EQ(length(fragments), 2u);
+        SEQAN_ASSERT(fragments[0] == TFragment(0, 8, 1, 7, 4));
+        SEQAN_ASSERT(fragments[1] == TFragment(0, 4, 1, 4, 3));
+    }
 }
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_banded_align)
@@ -208,14 +231,70 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_banded_graph)
 {
     using namespace seqan;
 
-    // TODO(holtgrew): Test after this is written.
+    typedef StringSet<Dna5String, Dependent<> > TStringSet;
+    typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
+
+    {
+        Dna5String strH("GGGGCTTAAGCTTGGGG");
+        Dna5String strV("AAAACTTAGCTCTAAAA");
+
+        TStringSet strings;
+        appendValue(strings, strH);
+        appendValue(strings, strV);
+        TAlignmentGraph alignmentGraph(strings);
+
+        SimpleScore scoringScheme(2, -1, -2, -2);
+
+        int score = localAlignment(alignmentGraph, scoringScheme, -10, 10);
+
+        SEQAN_ASSERT_EQ(score, 12);
+
+        std::stringstream ss;
+        ss << alignmentGraph;
+
+        // Note that the non-overlapping of the segments not part of the
+        // sequence is intended: They simply do not take part in the local
+        // alignment.
+        std::stringstream expectedSS;
+        expectedSS << "Alignment matrix:\n"
+                   << "      0     .    :    .    :    .   \n"
+                   << "        GGGG----CTTAAGCTTGGGG------\n"
+                   << "                ||| ||||           \n"
+                   << "        ----AAAACTT-AGCT-----CTAAAA\n\n\n";
+
+        SEQAN_ASSERT_EQ(ss.str(), expectedSS.str());
+    }
 }
 
 SEQAN_DEFINE_TEST(test_align_local_alignment_banded_fragment)
 {
     using namespace seqan;
 
-    // TODO(holtgrew): Test after this is written.
+    typedef StringSet<Dna5String> TStringSet;
+    typedef Fragment<unsigned> TFragment;
+    typedef String<TFragment>  TFragmentString;
+
+    {                  //01234567890123456
+        Dna5String strH("GGGGCTTAAGCTTGGGG");
+        Dna5String strV("AAAACTTAGCTCTAAAA");
+
+        TStringSet strings;
+        appendValue(strings, strH);
+        appendValue(strings, strV);
+
+        SimpleScore scoringScheme(2, -1, -2, -2);
+
+        TFragmentString fragments;
+
+        int score = localAlignment(fragments, strings, scoringScheme, -6, 6);
+
+        SEQAN_ASSERT_EQ(score, 12);
+
+        SEQAN_ASSERT_EQ(length(fragments), 2u);
+        SEQAN_ASSERT(fragments[0] == TFragment(0, 8, 1, 7, 4));
+        SEQAN_ASSERT(fragments[1] == TFragment(0, 4, 1, 4, 3));
+
+    }
 }
 
 // ==========================================================================

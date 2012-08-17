@@ -505,8 +505,9 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         // --CG--AT--
         //  XXXXXXXX
         
-        setClippedEndPosition(gaps, 9);
-        setClippedBeginPosition(gaps, 1);
+        // TODO(rmaerker): leading gaps in anchor gaps are enumerated with negative integers but should have the same interface as array gaps. Dave needs to fix this.
+        setClippedEndPosition(gaps, 9 + clippedBeginPosition(gaps));
+        setClippedBeginPosition(gaps, 1 + clippedBeginPosition(gaps));
 
         TIter it = begin(gaps);
         
@@ -550,10 +551,12 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
     }
 
+
     // Clip into leading/trailing characters.
     {
-        TString seq = "CGAT";
+        TString seq = "CGATAC";
         TGaps gaps(seq);
+        insertGaps(gaps, 6, 2);
         insertGaps(gaps, 4, 2);
         insertGaps(gaps, 2, 2);
         insertGaps(gaps, 0, 2);
@@ -561,17 +564,67 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         // 0123456789
         // --CG--AT--
         //    XXXX
-        
-        setClippedEndPosition(gaps, 7);
-        setClippedBeginPosition(gaps, 3);
+
+        // TODO(rmaerker): leading gaps in anchor gaps are enumerated with negative integers but should have the same interface as array gaps. Dave needs to fix this.
+        setClippedEndPosition(gaps, 7 + clippedBeginPosition(gaps));
+        setClippedBeginPosition(gaps, 3 + clippedBeginPosition(gaps));
 
         TIter it = begin(gaps);
-        
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 1u);
         ++it;
         
+        SEQAN_ASSERT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 2u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        ++it;
+
+        SEQAN_ASSERT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        ++it;
+
+        SEQAN_ASSERT_NOT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        ++it;
+    }
+
+    // Clip into gaps in the middle.
+    {
+        TString seq = "CGATAC";
+        TGaps gaps(seq);
+        insertGaps(gaps, 6, 2);
+        insertGaps(gaps, 4, 2);
+        insertGaps(gaps, 2, 2);
+        insertGaps(gaps, 0, 2);
+
+        // 01234567890123
+        // --CG--AT--AC--
+        //  XXXXXXXX
+
+        // TODO(rmaerker): leading gaps in anchor gaps are enumerated with negative integers but should have the same interface as array gaps. Dave needs to fix this.
+        setClippedEndPosition(gaps, 9 + clippedBeginPosition(gaps));
+        setClippedBeginPosition(gaps, 1 + clippedBeginPosition(gaps));
+
+        TIter it = begin(gaps);
+
+        SEQAN_ASSERT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        ++it;
+
+        SEQAN_ASSERT_NOT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 2u);
+        ++it;
+
+        SEQAN_ASSERT_NOT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        ++it;
+
         SEQAN_ASSERT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 2u);
         SEQAN_ASSERT_EQ(countCharacters(it), 0u);
@@ -590,6 +643,50 @@ void testAlignGapsIteratorClippedCountGapsCountCharactersIsGap(TGapsSpec const &
         SEQAN_ASSERT_NOT(isGap(it));
         SEQAN_ASSERT_EQ(countGaps(it), 0u);
         SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        ++it;
+
+        SEQAN_ASSERT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+    }
+
+    // Clipping into character in the middle
+    {
+        TString seq = "CGATAC";
+        TGaps gaps(seq);
+        insertGaps(gaps, 6, 2);
+        insertGaps(gaps, 4, 2);
+        insertGaps(gaps, 2, 2);
+        insertGaps(gaps, 0, 2);
+
+        // 01234567890123
+        // --CG--AT--AC--
+        //    XXXX
+
+        // TODO(rmaerker): leading gaps in anchor gaps are enumerated with negative integers but should have the same interface as array gaps. Dave needs to fix this.
+        setClippedEndPosition(gaps, 7 + clippedBeginPosition(gaps));
+        setClippedBeginPosition(gaps, 3 + clippedBeginPosition(gaps));
+
+        TIter it = begin(gaps);
+        SEQAN_ASSERT_NOT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        ++it;
+
+        SEQAN_ASSERT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 2u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        ++it;
+
+        SEQAN_ASSERT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 1u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 0u);
+        ++it;
+
+        SEQAN_ASSERT_NOT(isGap(it));
+        SEQAN_ASSERT_EQ(countGaps(it), 0u);
+        SEQAN_ASSERT_EQ(countCharacters(it), 1u);
+        ++it;
     }
 }
 
