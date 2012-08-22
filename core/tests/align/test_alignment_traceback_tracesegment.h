@@ -196,6 +196,103 @@ void testAlignmentTracebackRecordTrace(TTarget & target)
 //    recordSegment(target, 8, 8, 10, +TraceBitMask::NONE); // note this should fail when uncommented
 }
 
+void testAlignmentTracebackTraceSegmentGetBeginHorizontal()
+{
+    typedef TraceSegment<int, size_t> TTraceSegment;
+
+    TTraceSegment traceSegm;
+
+    traceSegm._horizontalBeginPos = 5;
+    traceSegm._verticalBeginPos = 12;
+    traceSegm._length = 7;
+
+    SEQAN_ASSERT_EQ(getBeginHorizontal(traceSegm), 5);
+
+    traceSegm._horizontalBeginPos = 7;
+    SEQAN_ASSERT_EQ(getBeginHorizontal(traceSegm), 7);
+}
+
+void testAlignmentTracebackTraceSegmentGetBeginVertical()
+{
+    typedef TraceSegment<int, size_t> TTraceSegment;
+
+    TTraceSegment traceSegm;
+
+    traceSegm._horizontalBeginPos = 5;
+    traceSegm._verticalBeginPos = 12;
+    traceSegm._length = 7;
+
+    SEQAN_ASSERT_EQ(getBeginVertical(traceSegm), 12);
+
+    traceSegm._verticalBeginPos = 7;
+    SEQAN_ASSERT_EQ(getBeginVertical(traceSegm), 7);
+}
+
+void testAlignmentTracebackTraceSegmentGetEndHorizontal()
+{
+    typedef TraceSegment<int, size_t> TTraceSegment;
+
+    TTraceSegment traceSegm;
+
+    traceSegm._horizontalBeginPos = 5;
+    traceSegm._verticalBeginPos = 12;
+    traceSegm._length = 7;
+    traceSegm._traceValue = +TraceBitMask::HORIZONTAL;
+
+    SEQAN_ASSERT_EQ(getEndHorizontal(traceSegm), 12);
+
+    traceSegm._traceValue = +TraceBitMask::VERTICAL;
+    SEQAN_ASSERT_EQ(getEndHorizontal(traceSegm), 5);
+}
+
+void testAlignmentTracebackTraceSegmentGetEndVertical()
+{
+    typedef TraceSegment<int, size_t> TTraceSegment;
+
+    TTraceSegment traceSegm;
+
+    traceSegm._horizontalBeginPos = 5;
+    traceSegm._verticalBeginPos = 12;
+    traceSegm._length = 7;
+    traceSegm._traceValue = +TraceBitMask::VERTICAL;
+
+    SEQAN_ASSERT_EQ(getEndVertical(traceSegm), 19);
+
+    traceSegm._traceValue = +TraceBitMask::HORIZONTAL;
+    SEQAN_ASSERT_EQ(getEndVertical(traceSegm), 12);
+}
+
+void testAlignmentTracebackTraceSegmentTranslateTraceValue()
+{
+    SEQAN_ASSERT_EQ(translateTraceValue(+TraceBitMask::DIAGONAL), "D");
+    SEQAN_ASSERT_EQ(translateTraceValue(+TraceBitMask::VERTICAL), "V");
+    SEQAN_ASSERT_EQ(translateTraceValue(+TraceBitMask::HORIZONTAL), "H");
+    SEQAN_ASSERT_EQ(translateTraceValue(+TraceBitMask::VERTICAL_OPEN), "v");
+    SEQAN_ASSERT_EQ(translateTraceValue(+TraceBitMask::HORIZONTAL_OPEN), "h");
+    SEQAN_ASSERT_EQ(translateTraceValue(+TraceBitMask::NONE), "0");
+}
+
+void testAlignmentTracebackTraceSegmentStreamOperator()
+{
+    typedef TraceSegment<int, size_t> TTraceSegment;
+
+    TTraceSegment traceSegm;
+
+    traceSegm._horizontalBeginPos = 5;
+    traceSegm._verticalBeginPos = 12;
+    traceSegm._length = 7;
+    traceSegm._traceValue = +TraceBitMask::DIAGONAL;
+
+    std::stringstream ss;
+    ss << traceSegm;
+
+    String<char> testString = "D-(5, 12, 7)";
+    String<char> res = ss.str();
+
+    SEQAN_ASSERT_EQ(res, testString);
+}
+
+
 SEQAN_DEFINE_TEST(test_alignment_traceback_tracesegment_constructor)
 {
     testAlignmentTracebackTraceSegmentsConstructor<int, unsigned int>();
@@ -221,32 +318,32 @@ SEQAN_DEFINE_TEST(test_alignment_traceback_tracesegment_size)
 }
 SEQAN_DEFINE_TEST(test_alignment_traceback_tracesegment_get_begin_horizontal)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    testAlignmentTracebackTraceSegmentGetBeginHorizontal();
 }
 
 SEQAN_DEFINE_TEST(test_alignment_traceback_tracesegment_get_begin_vertical)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    testAlignmentTracebackTraceSegmentGetBeginVertical();
 }
 
 SEQAN_DEFINE_TEST(test_alignment_traceback_tracesegment_get_end_horizontal)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    testAlignmentTracebackTraceSegmentGetEndHorizontal();
 }
 
 SEQAN_DEFINE_TEST(test_alignment_traceback_tracesegment_get_end_vertical)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    testAlignmentTracebackTraceSegmentGetEndVertical();
 }
 
 SEQAN_DEFINE_TEST(test_alignment_traceback_tracesegment_translate_trace_value)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    testAlignmentTracebackTraceSegmentTranslateTraceValue();
 }
 
 SEQAN_DEFINE_TEST(test_alignment_traceback_tracesegment_operator_stream)
 {
-    SEQAN_ASSERT_FAIL("Write me!");
+    testAlignmentTracebackTraceSegmentStreamOperator();
 }
 
 SEQAN_DEFINE_TEST(test_alignment_traceback_tracesegment_operator_equal)

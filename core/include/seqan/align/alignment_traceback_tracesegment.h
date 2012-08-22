@@ -153,7 +153,7 @@ template <typename TPosition, typename TSize>
 inline TPosition
 getEndHorizontal(TraceSegment<TPosition, TSize> const & traceSegment)
 {
-    if (traceSegment._traceValue & (TraceBitMask::HORIZONTAL | TraceBitMask::DIAGONAL))
+    if (traceSegment._traceValue & (TraceBitMask::HORIZONTAL | TraceBitMask::DIAGONAL ))
     {
         return traceSegment._horizontalBeginPos + traceSegment._length;
     }
@@ -224,7 +224,7 @@ template <typename TStream, typename TSize, typename TPosition>
 TStream & operator<<(TStream & stream, TraceSegment<TSize, TPosition> const & traceSegment)
 {
     stream << translateTraceValue(traceSegment._traceValue) << "-";
-    stream << "(" << traceSegment._horizontalBeginPos << "," << traceSegment._verticalBeginPos << "," <<
+    stream << "(" << traceSegment._horizontalBeginPos << ", " << traceSegment._verticalBeginPos << ", " <<
                 traceSegment._length << ")";
     return stream;
 }

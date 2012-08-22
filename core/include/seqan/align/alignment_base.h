@@ -370,6 +370,15 @@ typedef Tag<DPWideBandMiddlePhase_> DPWideBandMiddlePhase;
 struct DPWideBandLastPhase_;
 typedef Tag<DPWideBandLastPhase_> DPWideBandLastPhase; // If Band the last part of the alignment
 
+struct DPSmallBandInit_;
+typedef Tag<DPSmallBandInit_> DPSmallBandInit;
+
+struct DPSmallBandDetached_;
+typedef Tag<DPSmallBandDetached_> DPSmallBandDetached;
+
+struct DPSmallBandEnd_;
+typedef Tag<DPSmallBandEnd_> DPSmallBandEnd;
+
 // ----------------------------------------------------------------------------
 // Cell Specifier
 // ----------------------------------------------------------------------------

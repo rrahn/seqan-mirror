@@ -750,10 +750,10 @@ int testAlignmentDPImplBand(int lowerDiagonal, int upperDiagonal, TSeqH const & 
     CharString traceMatrix;
     resize(traceMatrix, getTraceMatrixSize(seqH, seqV, band, False()));
 
-    std::cout << seqH << std::endl;
+//    std::cout << seqH << std::endl;
 
     computeDPMatrix(tracker, traceMatrix, seqH, seqV, score, band, TAlignmentProfile());
-    std::cout << "\n" << std::endl;
+//    std::cout << "\n" << std::endl;
 //    std::cout << tracker._maxScore << std::endl;
     return tracker._maxScore;
 }
@@ -771,18 +771,18 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_noright_en
     //      x       x
     //        x x x x
 
-    Dna5String seqH = "ACGTGACATCGA";
-    DnaString seqV  = "ACGTACGAGCAT";
+    Dna5String seqH = "AAAACCCCGGGGTTTT";
+    DnaString seqV  = "AAAAGGGGCCCCTTTT";
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,1, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-2,1, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,2, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-2,2, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,1, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,2, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-2,1, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,3, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-3,1, seqH, seqV), 6);
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-4,1, seqH, seqV), 8);
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,4, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-5,5, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-6,5, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-5,6, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-4,4, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-6,6, seqH, seqV), 8);
 
 
     // wide band
@@ -797,7 +797,6 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_noright_en
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-7,7, seqH, seqV), 8);
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-8,3, seqH, seqV), 8);
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-3,8, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-9,9, seqH, seqV), 8);
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-11,11, seqH, seqV), 8);
 }
 
@@ -812,20 +811,16 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_noright_en
     //      x         x
     //        x x x x x x
 
-    Dna5String seqH = "ACGTGACATCGAACGTGACATCGAACGTGACATCGA";
-    DnaString seqV  = "ACGTACGAGCAT";
+    Dna5String seqH = "AAAAGGGGCCCCTTTT";
+    DnaString seqV  = "AAAACCCC";
     typedef FreeEndGaps<False, False, True, False> TFreeEndGaps;
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,1, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,1, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,1, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-2,1, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,2, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-2,2, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-4,1, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,4, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-5,5, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-6,5, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-5,6, seqH, seqV), 12);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,1, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-2,1, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-5,2, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-6,3, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,1, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,8, seqH, seqV), 8);
 
     // wide band
     //x x x x x
@@ -837,13 +832,10 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_noright_en
     //      x x x x x x x x
 
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-7,6, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,6, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,7, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8,5, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-3,10, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-9,9, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-11,9, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-11,24, seqH, seqV), 12);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,2, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-6,3, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-5,5, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,8, seqH, seqV), 8);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_noright_end_nottop_noleft_nobottom_right)
@@ -857,23 +849,20 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_noright_en
     //      x   x
     //        x x
     //          x
-    Dna5String seqH = "ACGTACGAGCAT";
-    DnaString seqV  = "ACGTGACATCGAACGTGACATCGAACGTGACATCGA";
+    DnaString seqH  = "AAAACCCC";
+    Dna5String seqV = "AAAAGGGGCCCCTTTT";
     typedef FreeEndGaps<False, False, False, True> TFreeEndGaps;
 
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,1, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,1, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-2,1, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,2, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-2,2, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-4,1, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,4, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-5,5, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-6,5, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-5,6, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,11, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-11,11, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-24,11, seqH, seqV), 12);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,2, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-2,1, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-3,2, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-4,3, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,7, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-2,7, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-3,7, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-4,7, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8,7, seqH, seqV), 8);
 }
 
 // Testing bands where upper diagonal crosses the horizontal sequence and the lower diagonal
@@ -889,31 +878,18 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_noright_
     //          x       x
     //            x x x x
 
-    Dna5String seqH = "ACGTGACATCGAACGTGAC";
-    DnaString seqV  = "ACGTGACATCGAACGTGACATCGAACGTGACATCGA";
-//    DnaString seqV  = "ACGTACGAGCAT";
+    DnaString seqH  = "AAAACCCCGGGGTTTT";
+    Dna5String seqV = "AAAAGGGG";
 
-    typedef FreeEndGaps<True, True, True, True> TFreeEndGaps;
-
-    std::cout << "Test Case B" <<std::endl;
-    testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,12, seqH, seqV);
-    Dna5String seqH1 = "ACGTGACATCGAACGTGAC";
-    DnaString seqV1  = "ACGTGACATCGAACGTGACATCGAACGTGACATCGA";
-    testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,12, seqH1, seqV1);
-    Dna5String seqH2 = "ACGTGACATCGAACGTGAC";
-    DnaString seqV2  = "ACGTGACATCGAACGTGACATCGAACGTGACATCGA";
-    testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,12, seqH2, seqV2);
-//    SEQAN_ASSERT_EQ(, 6);
-//    std::cout << "Test Case C" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(6,8, seqH, seqV), 6);
-//    std::cout << "Test Case D" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,8, seqH, seqV), 6);
-//    std::cout << "Test Case E" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(6,18, seqH, seqV), 6);
-//    std::cout << "Test Case A" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(6,8, seqH, seqV), MinValue<int>::VALUE);
-
-
+    typedef FreeEndGaps<True, False, True, True> TFreeEndGaps;
+    typedef FreeEndGaps<True, False, False, False> TFreeEndGaps2;
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps2> >(1,9, seqH, seqV), -2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(1,9, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(1,9, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(7,9, seqH, seqV), -12);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps2> >(5,10, seqH, seqV), -10);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(5,10, seqH, seqV), -4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(7,15, seqH, seqV), -2);
 
     // wide band
     //x x x x x x x x
@@ -924,18 +900,13 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_noright_
     //          x           x
     //            x x x x x x
 
-//    std::cout << "Test Case F" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(4,18, seqH, seqV), MinValue<int>::VALUE);
-//    std::cout << "Test Case G" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(5,18, seqH, seqV), 6);
-//    std::cout << "Test Case H" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,18, seqH, seqV), 6);
-//    std::cout << "Test Case I" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,17, seqH, seqV), 6);
-//    std::cout << "Test Case J" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(1,16, seqH, seqV), 6);
-//    std::cout << "Test Case K" <<std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,18, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,9, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(5,15, seqH, seqV), -2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,15, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(1,15, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,15, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(3,15, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,15, seqH, seqV), 0);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_noright_end_nottop_noleft_bottom_noright)
@@ -949,19 +920,17 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_noright_
     //          x         x
     //            x x x x x x
 
-    Dna5String seqH = "ACGTGACATCGAACGTGACACGTGACATCG";
-    DnaString seqV  = "ACGTACGAGCAT";
+    DnaString seqH  = "AAAACCCCGGGGTTTTGGGG";
+    Dna5String seqV = "AAAAGGGG";
     typedef FreeEndGaps<True, False, True, False> TFreeEndGaps;
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(5,6, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(5,6, seqH, seqV), -6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(17,18, seqH, seqV), -8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,1, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(6,8, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(6,18, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,12, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,1, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,1, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,2, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,3, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,4, seqH, seqV), 8);
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,8, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(5,18, seqH, seqV), 12);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(8,12, seqH, seqV), 0);
 
     // wide band
     //x x x x x x x x
@@ -972,11 +941,11 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_noright_
     //          x             x
     //            x x x x x x x x
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(4,18, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,18, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,17, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(1,16, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,18, seqH, seqV), 12);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(0,12, seqH, seqV), -8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(1,12, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,9, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(3,12, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,12, seqH, seqV), 8);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_noright_end_nottop_noleft_nobottom_right)
@@ -991,18 +960,18 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_noright_
     //            x x
     //              x
 
-    Dna5String seqH = "ACGTACGAGCAT";
-    DnaString seqV  = "ACGTGACATCGA";
+    DnaString seqH  = "AAAACCCCGGGG";
+    Dna5String seqV = "AAAAGGGG";
 
     typedef FreeEndGaps<True, False, False, True> TFreeEndGaps;
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(0,1, seqH, seqV), 0);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(1,5, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,1, seqH, seqV), 0);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,5, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,11, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,6, seqH, seqV), 10);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(10,11, seqH, seqV), 0);
+
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(5,10, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,5, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,11, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(5,11, seqH, seqV), -2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(6,11, seqH, seqV), -2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(10,11, seqH, seqV), -2);
 }
 
 // Testing bands where upper diagonal crosses the horizontal sequence somewhere behind the
@@ -1018,18 +987,28 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_right_en
     //          x       x
     //            x x x x
 
-    Dna5String seqH = "ACGTGACATCGAACGTGAC";
-    DnaString seqV  = "ACGTACGAGCAT";
+    DnaString seqH  = "AAAACCCCGGGGTTTT";
+    Dna5String seqV = "AAAAGGGG";
 
-    typedef FreeEndGaps<True, False, False, False> TFreeEndGaps;
+    typedef FreeEndGaps<True, False, True, True> TFreeEndGaps;
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(4,19, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,19, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,20, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(1,20000, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(6,19, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(5,19, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(5,200000, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(1,16, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(0,16, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,16, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(1,16, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,16, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(3,16, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,16, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,17, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(1,17, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,17, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(3,17, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,17, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,1000, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(1,1000, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,1000, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(3,1000, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(4,1000, seqH, seqV), 0);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_right_end_top_noleft_nobottom_right)
@@ -1042,19 +1021,21 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_noleft_nobottom_right_en
     //        x x
     //          x
 
-    Dna5String seqH = "ACGTACGAGCAT";
-    DnaString seqV  = "ACGTGACATCGA";
+    DnaString seqH  = "AAAACCCCGGGGTTTT";
+    Dna5String seqV = "AAAATTTT";
 
     typedef FreeEndGaps<True, False, False, True> TFreeEndGaps;
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(0,12, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(0,20, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(0,20000, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(2,12, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,12, seqH, seqV), 10); // what is here
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(2,20000, seqH, seqV), 10);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(11,12, seqH, seqV), 0);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(11,20, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(8,16, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(8,16, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(9,16, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(15,16, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(8,17, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(9,17, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(8,1000, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(9,1000, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(16,17, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(16,1000, seqH, seqV), 0);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_right_end_top_noleft_bottom_right)
@@ -1068,19 +1049,18 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_right_end_
     //       x       x
     //         x x x x
 
-    DnaString seqH = "ACGTGACATCGAACGTGACATCGAACGTGACATCGA";
-    DnaString seqV  = "ACGTACGAGCAT";
+    Dna5String seqH = "AAAACCCCGGGGTTTT";
+    DnaString seqV  = "AAAAGGGGCCCCTTTT";
 
-    std::cout << "A " << seqH << std::endl;
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,35, seqH, seqV), -24);  // not possible cannot be below -2 * 13
-    std::cout << "B " << seqH << std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,200000, seqH, seqV), -24);
-//    std::cout << "C " << seqH << std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-7,35, seqH, seqV), -24);
-//    std::cout << "D " <<seqH << std::endl;
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-7,200000, seqH, seqV), -24); // ??? cannot be right
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-11,35, seqH, seqV), -24);
-//    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-11,200000, seqH, seqV), -24);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,16, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,17, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,1000, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-2,16, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-2,17, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-2,1000, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-15,16, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-15,17, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-15,1000, seqH, seqV), 8);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_right_end_top_noleft_nobottom_right)
@@ -1093,18 +1073,22 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_right_end_
     //      x x
     //        x
 
-    Dna5String seqH = "ACGTACGAGCAT";
-    DnaString seqV  = "ACGTGACATCGAACGTGACATCGAACGTGACATCGA";
+    Dna5String seqH = "AAAATTTT";
+    DnaString seqV  = "AAAAGGGGCCCCTTTT";
 
     typedef FreeEndGaps<False, False, False, True> TFreeEndGaps;
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,12, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,12, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,20000, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-6,12, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-6,20000, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-24,12, seqH, seqV), 12);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-24,20000, seqH, seqV), 12);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-7,8, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-8,8, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,9, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,1000, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,8, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,9, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,1000, seqH, seqV), 0);
+
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,8, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,9, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,1000, seqH, seqV), 0);
 }
 
 // Testing bands where upper diagonal crosses the vertical sequence and the lower diagonal
@@ -1120,17 +1104,23 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_notop_left_nobottom_norigth_
     //     x     x
     //       x x x
 
-    Dna5String seqH = "ACGTACGAG";
-    DnaString seqV  = "ACGTGACATCGA";
+    Dna5String seqH = "CCCCTTTT";
+    DnaString seqV  = "AAAACCCCGGGGTTTT";
 
     typedef FreeEndGaps<False, True, False, False> TFreeEndGaps;
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-11,0, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-4, -2, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-11,0, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-4, -2, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-11, -2, seqH, seqV), 6);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-4, 0, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-9,-1, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-15,-1, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-9,-1, seqH, seqV), 8);  // BUG
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-15,-1, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-9,-7, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-9,-6, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-9,-5, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-9,-4, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-15,-7, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-15,-6, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-15,-5, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-15,-4, seqH, seqV), 8);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_notop_left_nobottom_noright_end_notop_noleft_bottom_noright)
@@ -1143,17 +1133,19 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_notop_left_nobottom_noright_
     //     x     x
     //       x x x x
 
-    Dna5String seqH = "ACGTACGAGCAT";
-    DnaString seqV  = "ACGTGACATCGA";
+    Dna5String seqH = "AAAACCCCGGGGTTTT";
+    DnaString seqV  = "AAAAGGGGCCCCTTTT";
 
     typedef FreeEndGaps<False, True, True, False> TFreeEndGaps;
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-11,0, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,0, seqH, seqV), 2);
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-4, -2, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-11,0, seqH, seqV), 10);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-4, -2, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-11, -2, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-4, 0, seqH, seqV), 10);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,0, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-2,0, seqH, seqV), 4);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-3,0, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-4,0, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-15, 0, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-15, -14, seqH, seqV), -2);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_notop_left_nobottom_noright_end_notop_noleft_nobottom_right)
@@ -1166,17 +1158,17 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_notop_left_nobottom_noright_
     //     x x
     //       x
 
-    Dna5String seqH = "ACGTA";
-    DnaString seqV  = "ACGTGACATCGA";
+    Dna5String seqH = "AAAACCCC";
+    DnaString seqV  = "AAAAGGGGCCCCTTTT";
 
     typedef FreeEndGaps<False, True, False, True> TFreeEndGaps;
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-7,0, seqH, seqV), -4);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-7, -6, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7,0, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-7, -6, seqH, seqV), 2);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1, 0, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-6, -2, seqH, seqV), 6);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-8,0, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-8, -1, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8,0, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8, -7, seqH, seqV), -12);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1, 0, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-6, -2, seqH, seqV), 4);
 }
 
 // horizontal begin pos on left, vertical begin pos behind seqV
@@ -1190,21 +1182,21 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_notop_left_nobottom_noright_
     // x         x
     // x x x x x x x
 
-    Dna5String seqH = "ACGTACGAGCAT";
-    DnaString seqV  = "ACGTGACATCGA";
+    Dna5String seqH = "AAAACCCCGGGGTTTT";
+    DnaString seqV  = "AAAAGGGGCCCCTTTT";
 
     typedef FreeEndGaps<False, True, True, False> TFreeEndGaps;
 
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-12,0, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-16,0, seqH, seqV), 8);
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-20000,0, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-12, -2, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-16, -2, seqH, seqV), MinValue<int>::VALUE);
     SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-20000, -2, seqH, seqV), MinValue<int>::VALUE);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-12,0, seqH, seqV), 10);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000,0, seqH, seqV), 10);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-12, -2, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000, -2, seqH, seqV), 8);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-12, 11, seqH, seqV), 10);
-    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000, 11, seqH, seqV), 10);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-16,0, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000,0, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-16, -4, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000, -4, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-16, -11, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000, -11, seqH, seqV), 0);
 }
 
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_notop_left_nobottom_noright_end_notop_left_bottom_right)
@@ -1216,35 +1208,146 @@ SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_notop_left_nobottom_noright_
     // x     x
     // x     x
     // x x x x
+
+    Dna5String seqH = "AAAACCCC";
+    DnaString seqV  = "AAAAGGGGCCCCTTTT";
+
+    typedef FreeEndGaps<False, True, False, False> TFreeEndGaps;
+
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-16,0, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-20000,0, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-16, -2, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-20000, -2, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-16,0, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000,0, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-16, -1, seqH, seqV), -2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000, -1, seqH, seqV), -2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-16, -7, seqH, seqV), -14);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000, -7, seqH, seqV), -14);
 }
 
 // horizontal begin pos on top, vertical begin pos behind seqV
-SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_fullleft_end_bottom_noright)
+SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_noright_end_notop_left_bottom_noright)
 {
     // only wide band
+    // x x x
+    // x     x
+    // x       x
+    // x         x
+    // x           x
+    // x             x
+    // x x x x x x x x x
+
+    Dna5String seqH = "AAAACCCCGGGGTTTT";
+    DnaString seqV  = "AAAAGGGG";
+
+    typedef FreeEndGaps<False, False, True, False> TFreeEndGaps;
+
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-8,8, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-20000,8, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-8, 6, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-20000, 6, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8,1, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000,1, seqH, seqV), 2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8, 8, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000, 8, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8, 4, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000, 4, seqH, seqV), 8);
 }
 
-SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_fullleft_end_bottom_right)
+SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_nobottom_noright_end_notop_left_bottom_right)
 {
     // only wide band
+    // x x x
+    // x     x
+    // x       x
+    // x         x
+    // x           x
+    // x           x
+    // x x x x x x x
+
+    Dna5String seqH = "AAAACCCCGGGGTTTT";
+    DnaString seqV  = "AAAAGGGG";
+
+    typedef FreeEndGaps<False, False, True, False> TFreeEndGaps;
+
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-8,9, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-20000,9, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8,9, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000,9, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8, 15, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000, 15, seqH, seqV), 8);
 }
 
 // horizontal begin pos behind seqH, vertical begin pos behind seqV
-SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_fulltop_fullleft_end_fullbottom_fullright)
+SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_top_left_bottom_right_end_top_left_bottom_right)
 {
     // only wide band
+    // x x x x x x x
+    // x           x
+    // x           x
+    // x           x
+    // x           x
+    // x           x
+    // x x x x x x x
+
+    Dna5String seqH = "AAAACCCCGGGGTTTT";
+    DnaString seqV  = "AAAAGGGG";
+
+    typedef FreeEndGaps<False, False, True, False> TFreeEndGaps;
+
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-8,16, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-20000,20000, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8,16, seqH, seqV), 8);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000,20000, seqH, seqV), 8);
 }
 
 // horizontal begin pos behind seqH, vertical begin pos behind seqV
 SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_begin_notop_noleft_nobottom_noright_end_notop_noleft_nobottom_noright)
 {
     // no band ...
+    Dna5String seqH = "AAAACCCCGGGGTTTT";
+    DnaString seqV  = "AAAAGGGG";
+
+    typedef FreeEndGaps<True, True, True, True> TFreeEndGaps;
+
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-9,-9, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-20000,-9, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(17,17, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(17,2000, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-9,-9, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-20000,-9, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(17,17, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(17,2000, seqH, seqV), MinValue<int>::VALUE);
+
 }
 
 // horizontal begin pos = vertical begin pos
-SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_one_size)
+SEQAN_DEFINE_TEST(test_alignment_dp_impl_band_width_one_diagonal)
 {
     // special case.
+    // x
+    //   x
+    //     x
+    //       x
+
+    Dna5String seqH = "AAAACCCCGGGGTTTT";
+    DnaString seqV  = "AAAAGGGG";
+
+    typedef FreeEndGaps<True, True, True, True> TFreeEndGaps;
+
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-8,-8, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(-1,-1, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(0,0, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(1,1, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(8,8, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<> >(16,16, seqH, seqV), MinValue<int>::VALUE);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-8,-8, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(-1,-1, seqH, seqV), -2);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(0,0, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(1,1, seqH, seqV), 0);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(8,8, seqH, seqV), -16);
+    SEQAN_ASSERT_EQ(testAlignmentDPImplBand<Global<TFreeEndGaps> >(16,16, seqH, seqV), 0);
 }
 
 

@@ -503,6 +503,52 @@ struct SetUpColumnManager<TAlignmentProfile, DPWideBandLastPhase>
     typedef ColumnManager<TFirstCell_, TInnerCell_, TLastCell_> Type; // constructs the cell for initialization
 };
 
+// The column manager used for one-size bands.
+
+template <typename TAlignmentProfile>
+struct SetUpColumnManager<TAlignmentProfile, DPSmallBandInit>
+{
+    typedef typename GetAlignmentSpec<TAlignmentProfile>::Type TAlignmentSpec_;
+    typedef typename Or<IsLocal<TAlignmentProfile>,
+    IsSameType<typename Spec<TAlignmentSpec_>::Type, SplitBreakpoint> >::Type TIsTrackable_;
+
+     // defines the specialization of the first cell
+    typedef Cell<DPDirectionZero, TIsTrackable_> TCell_;
+
+    // Small bands have only a width of one, so there is only one cell per column.
+    typedef ColumnManager<TCell_, TCell_, TCell_> Type;
+};
+
+template <typename TAlignmentProfile>
+struct SetUpColumnManager<TAlignmentProfile, DPSmallBandDetached>
+{
+
+    typedef typename GetAlignmentSpec<TAlignmentProfile>::Type TAlignmentSpec_;
+    typedef typename IsFreeEndGap<TAlignmentProfile, FirstRow>::Type TFirstRow_;
+
+    typedef typename Or<IsLocal<TAlignmentProfile>,
+            IsSameType<typename Spec<TAlignmentSpec_>::Type, SplitBreakpoint> >::Type TIsTrackable_;
+
+    typedef Cell<DPDirectionDiagonal, TIsTrackable_> TCell_;
+    // Small bands have only a width of one, so there is only one cell per column.
+    typedef ColumnManager<TCell_, TCell_, TCell_> Type;
+};
+
+template <typename TAlignmentProfile>
+struct SetUpColumnManager<TAlignmentProfile, DPSmallBandEnd>
+{
+    typedef typename GetAlignmentSpec<TAlignmentProfile>::Type TAlignmentSpec_;
+
+    typedef typename Or<IsLocal<TAlignmentProfile>,
+        IsSameType<typename Spec<TAlignmentSpec_>::Type, SplitBreakpoint> >::Type TIsTrackable_;
+
+        // defines the specialization of the first cell
+    typedef Cell<DPDirectionDiagonal,
+            typename Or<TIsTrackable_, IsFreeEndGap<TAlignmentProfile, LastRow> >::Type> TCell_;
+
+    typedef ColumnManager<TCell_, TCell_, TCell_> Type; // constructs the cell for initialization
+};
+
 // ----------------------------------------------------------------------------
 // Metafunction GetDPDirection
 // ----------------------------------------------------------------------------
@@ -605,6 +651,24 @@ begin(DPMatrix<TDPValue> const & dpMatrix,
     return end(dpMatrix, TIterSpec()) + (colManager._spanDp - 1);
 }
 
+//template <typename TDPValue, typename TAlignProfile, typename TBandSpec, typename TIterSpec>
+//inline typename Iterator<DPMatrix<TDPValue> const >::Type
+//begin(DPMatrix<TDPValue> const & dpMatrix,
+//      DPManager<TAlignProfile, Band<BandSwitchedOn<TBandSpec> > > & colManager,
+//      TIterSpec const & /*spec*/)
+//{
+//    return end(dpMatrix, TIterSpec()) + (colManager._spanDp - 1);
+//}
+//
+//template <typename TDPValue, typename TAlignProfile, typename TBandSpec, typename TIterSpec>
+//inline typename Iterator<DPMatrix<TDPValue> const >::Type
+//begin(DPMatrix<TDPValue> const & dpMatrix,
+//      DPManager<TAlignProfile, Band<BandSwitchedOn<TBandSpec> > > const & colManager,
+//      TIterSpec const & /*spec*/)
+//{
+//    return end(dpMatrix, TIterSpec()) + (colManager._spanDp - 1);
+//}
+
 template <typename TTraceMatrix, typename TDPManager, typename TIterSpec>
 inline typename Iterator<TTraceMatrix>::Type
 begin(TTraceMatrix & traceMatrix, TDPManager const & colManager, TIterSpec const & /*spec*/)
@@ -626,13 +690,12 @@ begin(TTraceMatrix const & traceMatrix, TDPManager const & colManager, TIterSpec
 // In the banded version we need to correct the span once when we go to the last
 // DP phase to refer to the correct cells in the next column.
 
-//template <typename TAlignmentProfile, typename TBand, typename TColumnType>
-//inline void
-//_correctSpan(DPManager<TAlignmentProfile, TBand> const & /*colManager*/,
-//             TColumnType const & /*colType*/)
-//{
-//    // nothing to do
-//}
+template <typename TAlignmentProfile, typename TBand>
+inline void
+_correctSpan(DPManager<TAlignmentProfile, TBand> const & /*dpManager*/)
+{
+    // nothing to do
+}
 
 template <typename TAlignmentProfile, typename TBandSpec>
 inline void
@@ -726,6 +789,28 @@ update(DPManager<TAlignmentProfile, Band<BandSwitchedOn<TBandSpec> > > & columnM
     ++columnManager._spanSeqVBegin;
     ++columnManager._spanDp;
     ++columnManager._spanTrace;
+}
+
+// ----------------------------------------------------------------------------
+// Function update                                                 [small band]
+// ----------------------------------------------------------------------------
+
+template <typename TAlignmentProfile, typename TBandSpec>
+inline void
+update(DPManager<TAlignmentProfile, Band<BandSwitchedOn<TBandSpec> > > & columnManager,
+       DPSmallBandDetached const & /*colType*/)
+{
+    ++columnManager._spanSeqVBegin;
+    ++columnManager._spanSeqVEnd;
+}
+
+template <typename TAlignmentProfile, typename TBandSpec>
+inline void
+update(DPManager<TAlignmentProfile, Band<BandSwitchedOn<TBandSpec> > > & columnManager,
+       DPSmallBandEnd const & /*colType*/)
+{
+    ++columnManager._spanSeqVBegin;
+    ++columnManager._spanSeqVEnd;
 }
 
 }  // namespace seqan

@@ -45,6 +45,7 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+// TODO(rmaerker): make dp matrix dependent from band.
 template <typename TDPValue>
 class DPMatrix
 {
@@ -212,6 +213,16 @@ inline void _initDPMatrix(DPMatrix<TDPValue> & dpMatrix,
     resize(dpMatrix._dataTable, getColumnSize(seqH, seqV, band), Exact());
 }
 
+//template <typename TDPValue, typename TSequenceH, typename TSequenceV, typename TBandSpec>
+//inline void _initDPMatrix(DPMatrix<TDPValue> & dpMatrix,
+//        TSequenceH const & seqH,
+//        TSequenceV const & seqV,
+//        Band<BandSwitchedOn<TBandSpec> > const & band)
+//{
+//    //single column matrix needs only one recursive column
+//    resize(dpMatrix._dataTable, getColumnSize(seqH, seqV, band) + 1, Exact());
+//}
+
 // ----------------------------------------------------------------------------
 // function _checkValidSequenceLengths()
 // ----------------------------------------------------------------------------
@@ -307,7 +318,7 @@ getInitialColumnSize(TSequenceH const & /*seqH*/,
                       Band<BandSwitchedOn<TBandSpec> > const & band)
 {
     // The minimal length of a column is one.
-    return _max(1, _min(1 + static_cast<int>(length(seqV)), 1 - getLowerDiagonal(band)));
+    return _max(1, _min(0, getUpperDiagonal(band)) + _min(1 + static_cast<int>(length(seqV)), 1 - getLowerDiagonal(band)));
 }
 
 // ----------------------------------------------------------------------------

@@ -105,35 +105,35 @@ namespace seqan {
 //    return "X";
 //}
 
-//template <typename TMatrix, typename TSeqH, typename TSeqV, typename TBand>
-//void printTraceback(TMatrix const & matrix, TSeqH const & seqH, TSeqV const & seqV, TBand const & band)
-//{
-//    typedef typename Iterator<TMatrix>::Type TIterator;
-//    typedef typename Size<TSeqH>::Type TSize;
-//
-//    TSize columnSize = getColumnSize(seqH, seqV, band);
-//    TSize rowSize = getRowSize(seqH, seqV, band);
-//
-//    std::cout << "\t\t";
-//    for (TSize t = 0; t < length(seqH); ++t)
-//    {
-//        std::cout << seqH[t] << "\t";
-//    }
-//    std::cout << "\n";
-//
-//    for (TSize j = 0; j < columnSize; ++j)
-//    {
-//        if (j > 0)
-//            std::cout << seqV[j-1] << "\t";
-//        else
-//            std::cout << "\t";
-//        for (TSize i = 0; i < rowSize; ++i)
-//        {
-//            std::cout << translateTraceValue(matrix[i*columnSize + j]) << "\t";
-//        }
-//        std::cout << "\n";
-//    }
-//}
+template <typename TMatrix, typename TSeqH, typename TSeqV, typename TBand>
+void printTraceback(TMatrix const & matrix, TSeqH const & seqH, TSeqV const & seqV, TBand const & band)
+{
+    typedef typename Iterator<TMatrix>::Type TIterator;
+    typedef typename Size<TSeqH>::Type TSize;
+
+    TSize columnSize = getColumnSize(seqH, seqV, band);
+    TSize rowSize = getRowSize(seqH, seqV, band);
+
+    std::cout << "\t\t";
+    for (TSize t = 0; t < length(seqH); ++t)
+    {
+        std::cout << seqH[t] << "\t";
+    }
+    std::cout << "\n";
+
+    for (TSize j = 0; j < columnSize; ++j)
+    {
+        if (j > 0)
+            std::cout << seqV[j-1] << "\t";
+        else
+            std::cout << "\t";
+        for (TSize i = 0; i < rowSize; ++i)
+        {
+            std::cout << translateTraceValue(matrix[i*columnSize + j]) << "\t";
+        }
+        std::cout << "\n";
+    }
+}
 
 //template <typename TMatrix, typename TSeq>
 //void printTraceback(TMatrix const & matrix, TSeq const & seqH, TSeq const & seqV)
@@ -444,18 +444,147 @@ _intializeTraceBack(TTraceValue const & traceValue, LinearGaps const & /*tag*/)
     return TraceBitMask::NONE;
 }
 
+template <typename TTarget, typename TTraceIterator, typename TTraceValue, typename TFragmentSize, typename TSeq0Pos,
+        typename TSeq1Pos, typename TSize, typename TBand, typename TGapSpec>
+inline void
+_internalFollowTrace(TTarget & target,
+                     TTraceIterator & traceIter,
+                     TTraceValue & traceValue,
+                     TTraceValue & lastTraceValue,
+                     TFragmentSize & fragmentLength,
+                     TSeq0Pos & seqHPos,
+                     TSeq1Pos & seqVPos,
+                     TSize const & columnSize,
+                     TBand const & band,
+                     TGapSpec const & gapSpec)
+{
+//    std::cout << "(" << seqHPos << ", " << seqVPos << ") - " << translateTraceValue(*traceIter) << std::endl;
+
+    if (traceValue & TraceBitMask::DIAGONAL)
+    {
+        traceValue = _doFollowDiagonal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+                                       columnSize, band, gapSpec);
+    }
+    else if ((traceValue & TraceBitMask::VERTICAL))
+    {
+        traceValue = _doFollowVertical(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+                                       columnSize, band, gapSpec);
+    }
+    else if (traceValue & TraceBitMask::HORIZONTAL)
+    {
+        traceValue = _doFollowHorizontal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+                                       columnSize, band, gapSpec);
+    }
+    else if (traceValue & TraceBitMask::VERTICAL_OPEN)
+    {
+        traceValue = _doFollowVertical(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+                                       columnSize, band, LinearGaps());
+    }
+    else if (traceValue & TraceBitMask::HORIZONTAL_OPEN)
+    {
+        traceValue = _doFollowHorizontal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+                                       columnSize, band, LinearGaps());
+    }
+    else
+    { // the trace back is either NONE or something else
+        if (traceValue == TraceBitMask::NONE)
+        {
+            return;
+        }
+        else if (traceValue & TraceBitMask::FORBIDDEN)
+        {
+            SEQAN_ASSERT_FAIL("Fatal Error in Traceback: Reached cell that was forbidden!");
+        }
+    }
+}
+
 // ----------------------------------------------------------------------------
 // function _doFollowTrace()
 // ----------------------------------------------------------------------------
 template <typename TTarget, typename TTraceIterator, typename TSeq0Pos, typename TSeq1Pos, typename TSize,
-    typename TBand, typename TGapSpec>
+        typename TGapSpec>
 inline void
 _doFollowTrace(TTarget & target,
                TTraceIterator & traceIter,
                TSeq0Pos & seqHPos,
                TSeq1Pos & seqVPos,
+               TSeq0Pos const & /*firstAnchor*/,
+               TSeq0Pos const & /*secondAnchor*/,
                TSize const & columnSize,
-               TBand const & band,
+               Band<BandSwitchedOff> const & band,
+               TGapSpec const & gapSpec)
+{
+    typedef typename TraceBitMask::Type TTraceValue;
+
+    // the segement length value
+    TSize fragmentLength = 0;
+    TTraceValue traceValue = value(traceIter);
+    TTraceValue lastTraceValue = _intializeTraceBack(traceValue, gapSpec);
+
+
+
+    // TRACEBACK
+    while ((seqHPos != 0 && seqVPos != 0) && traceValue != TraceBitMask::NONE)
+    {
+        _internalFollowTrace(target, traceIter, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, columnSize, band, gapSpec);
+    }
+    recordSegment(target, seqHPos, seqVPos, fragmentLength, lastTraceValue);
+
+//    while ((seqHPos != 0 && seqVPos != 0) && traceValue != TraceBitMask::NONE)
+//    {
+//        std::cout << "(" << seqHPos << ", " << seqVPos << ") - " << translateTraceValue(*traceIter) << std::endl;
+//
+//        if (traceValue & TraceBitMask::DIAGONAL)
+//        {
+//            traceValue = _doFollowDiagonal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, gapSpec);
+//        }
+//        else if ((traceValue & TraceBitMask::VERTICAL))
+//        {
+//            traceValue = _doFollowVertical(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, gapSpec);
+//        }
+//        else if (traceValue & TraceBitMask::HORIZONTAL)
+//        {
+//            traceValue = _doFollowHorizontal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, gapSpec);
+//        }
+//        else if (traceValue & TraceBitMask::VERTICAL_OPEN)
+//        {
+//            traceValue = _doFollowVertical(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, LinearGaps());
+//        }
+//        else if (traceValue & TraceBitMask::HORIZONTAL_OPEN)
+//        {
+//            traceValue = _doFollowHorizontal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, LinearGaps());
+//        }
+//        else
+//        { // the trace back is either NONE or something else
+//            if (traceValue == TraceBitMask::NONE)
+//            {
+//                break;
+//            }
+//            else if (traceValue & TraceBitMask::FORBIDDEN)
+//            {
+//                SEQAN_ASSERT_FAIL("Fatal Error in Traceback: Reached cell that was forbidden!");
+//            }
+//        }
+//    }
+    // trace the last detected segment
+}
+
+template <typename TTarget, typename TTraceIterator, typename TSeq0Pos, typename TSeq1Pos, typename TSize,
+    typename TBandSpec, typename TGapSpec>
+inline void
+_doFollowTrace(TTarget & target,
+               TTraceIterator & traceIter,
+               TSeq0Pos & seqHPos,
+               TSeq1Pos & seqVPos,
+               TSeq0Pos const & firstAnchor,
+               TSeq0Pos const & secondAnchor,
+               TSize const & columnSize,
+               Band<BandSwitchedOn<TBandSpec> > const & /*band*/,
                TGapSpec const & gapSpec)
 {
     typedef typename TraceBitMask::Type TTraceValue;
@@ -466,48 +595,61 @@ _doFollowTrace(TTarget & target,
     TTraceValue lastTraceValue = _intializeTraceBack(traceValue, gapSpec);
 
     // TRACEBACK
+    while((seqHPos > firstAnchor && seqVPos != 0) && traceValue != TraceBitMask::NONE)
+    {
+        _internalFollowTrace(target, traceIter, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, columnSize, Band<BandSwitchedOn<> >(), gapSpec);
+    }
+    while((seqHPos > secondAnchor && seqVPos != 0) && traceValue != TraceBitMask::NONE)
+    {
+        _internalFollowTrace(target, traceIter, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, columnSize, Band<BandSwitchedOff>(), gapSpec);
+    }
     while ((seqHPos != 0 && seqVPos != 0) && traceValue != TraceBitMask::NONE)
     {
-
-        if (traceValue & TraceBitMask::DIAGONAL)
-        {
-            traceValue = _doFollowDiagonal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
-                                           columnSize, band, gapSpec);
-        }
-        else if ((traceValue & TraceBitMask::VERTICAL))
-        {
-            traceValue = _doFollowVertical(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
-                                           columnSize, band, gapSpec);
-        }
-        else if (traceValue & TraceBitMask::HORIZONTAL)
-        {
-            traceValue = _doFollowHorizontal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
-                                           columnSize, band, gapSpec);
-        }
-        else if (traceValue & TraceBitMask::VERTICAL_OPEN)
-        {
-            traceValue = _doFollowVertical(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
-                                           columnSize, band, LinearGaps());
-        }
-        else if (traceValue & TraceBitMask::HORIZONTAL_OPEN)
-        {
-            traceValue = _doFollowHorizontal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
-                                           columnSize, band, LinearGaps());
-        }
-        else
-        { // the trace back is either NONE or something else
-            if (traceValue == TraceBitMask::NONE)
-            {
-                break;
-            }
-            else if (traceValue & TraceBitMask::FORBIDDEN)
-            {
-                SEQAN_ASSERT_FAIL("Fatal Error in Traceback: Reached cell that was forbidden!");
-            }
-        }
+        _internalFollowTrace(target, traceIter, traceValue, lastTraceValue, fragmentLength, seqHPos, seqVPos, columnSize, Band<BandSwitchedOn<> >(), gapSpec);
     }
-    // trace the last detected segment
     recordSegment(target, seqHPos, seqVPos, fragmentLength, lastTraceValue);
+//    while ((seqHPos != 0 && seqVPos != 0) && traceValue != TraceBitMask::NONE)
+//    {
+//        std::cout << "(" << seqHPos << ", " << seqVPos << ") - " << translateTraceValue(*traceIter) << std::endl;
+//
+//        if (traceValue & TraceBitMask::DIAGONAL)
+//        {
+//            traceValue = _doFollowDiagonal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, gapSpec);
+//        }
+//        else if ((traceValue & TraceBitMask::VERTICAL))
+//        {
+//            traceValue = _doFollowVertical(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, gapSpec);
+//        }
+//        else if (traceValue & TraceBitMask::HORIZONTAL)
+//        {
+//            traceValue = _doFollowHorizontal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, gapSpec);
+//        }
+//        else if (traceValue & TraceBitMask::VERTICAL_OPEN)
+//        {
+//            traceValue = _doFollowVertical(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, LinearGaps());
+//        }
+//        else if (traceValue & TraceBitMask::HORIZONTAL_OPEN)
+//        {
+//            traceValue = _doFollowHorizontal(target, traceIter, lastTraceValue, seqHPos, seqVPos, fragmentLength,
+//                                           columnSize, band, LinearGaps());
+//        }
+//        else
+//        { // the trace back is either NONE or something else
+//            if (traceValue == TraceBitMask::NONE)
+//            {
+//                break;
+//            }
+//            else if (traceValue & TraceBitMask::FORBIDDEN)
+//            {
+//                SEQAN_ASSERT_FAIL("Fatal Error in Traceback: Reached cell that was forbidden!");
+//            }
+//        }
+//    }
+    // trace the last detected segment
 }
 
 // ----------------------------------------------------------------------------
@@ -526,6 +668,7 @@ inline void followTrace(TTarget & target,
 {
     typedef AlignmentProfile<Global<TCoreSpec>, TGapSpec, Traceback<Default> > TAlignmentProfile;
     typedef typename Size<TTraceMatrix>::Type TSize;
+    typedef typename Size<TBand>::Type TBandSize;
     typedef typename TraceBitMask::Type TTraceValue;
     typedef typename Position<TSequenceH>::Type TSeqHPos;
     typedef typename Position<TSequenceV>::Type TSeqVPos;
@@ -538,6 +681,10 @@ inline void followTrace(TTarget & target,
     TSeqHPos seqHPos = _determineSeq0Pos(traceIter - traceItBegin, seqH, seqV, band);
     TSeqVPos seqVPos = _determineSeq1Pos(traceIter - traceItBegin, seqH, seqV, band);
 
+    TSeqHPos firstAnchor = _max(0, _min(getUpperDiagonal(band), static_cast<TBandSize>(seqHPos)));
+    TSeqHPos secondAnchor = _max(
+            0, _min(static_cast<TBandSize>(length(seqV)) + getLowerDiagonal(band), static_cast<TBandSize>(seqHPos)));
+
     // record overlaps at tail of sequences if any
     if (seqHPos != length(seqH))
     {
@@ -549,7 +696,8 @@ inline void followTrace(TTarget & target,
     }
 
     // actually follow the trace
-    _doFollowTrace(target, traceIter, seqHPos, seqVPos, getColumnSize(seqH, seqV, band), band, TGapSpec());
+    _doFollowTrace(target, traceIter, seqHPos, seqVPos, firstAnchor, secondAnchor, getColumnSize(seqH, seqV, band),
+                   band, TGapSpec());
 
     // record overlaps at begin of sequences if any
     if(seqHPos != 0)
@@ -575,6 +723,7 @@ inline void followTrace(TTarget & target,
 {
     typedef AlignmentProfile<Global<TCoreSpec>, TGapSpec, Traceback<Default> > TAlignmentProfile;
     typedef typename Size<TTraceMatrix>::Type TSize;
+    typedef typename Size<TBand>::Type TBandSize;
     typedef typename TraceBitMask::Type TTraceValue;
     typedef typename Position<TSequenceH>::Type TSeqHPos;
     typedef typename Position<TSequenceV>::Type TSeqVPos;
@@ -587,11 +736,19 @@ inline void followTrace(TTarget & target,
     TSeqHPos seqHPos = _determineSeq0Pos(traceIter - traceItBegin, seqH, seqV, band);
     TSeqVPos seqVPos = _determineSeq1Pos(traceIter - traceItBegin, seqH, seqV, band);
 
+    TSeqHPos firstAnchor = _max(0, _min(getUpperDiagonal(band), static_cast<TBandSize>(seqHPos)));
+    TSeqHPos secondAnchor = _max(
+            0, _min(static_cast<TBandSize>(length(seqV)) + getLowerDiagonal(band), static_cast<TBandSize>(seqHPos)));
+
+//    std::cout << "TraceMatrix:\n";
+//    printTraceback(traceMatrix, seqH, seqV, band);
+
     // Note we don't record overlaps at the tail or at the beginning of the sequences.
     // Instead we cut the gaps by setting clip positions afterwards
 
     // actually follow the trace
-    _doFollowTrace(target, traceIter, seqHPos, seqVPos, getColumnSize(seqH, seqV, band), band, TGapSpec());
+    _doFollowTrace(target, traceIter, seqHPos, seqVPos, firstAnchor, secondAnchor, getColumnSize(seqH, seqV, band),
+                   band, TGapSpec());
 }
 
 }  // namespace seqan

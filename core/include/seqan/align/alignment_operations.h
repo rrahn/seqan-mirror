@@ -87,6 +87,7 @@ integrateAlign(Align<TSource1, TSpec1> & align,
 
 	typedef typename Row<TAlign>::Type TRow;
 	typedef typename Row<TInfixAlign const>::Type TInfixRow;
+	typedef typename Position<TRow>::Type TViewPosition;
 
 	// Iterators on align and infixAlign.
 	typename Iterator<TRow>::Type it;
@@ -101,7 +102,7 @@ integrateAlign(Align<TSource1, TSpec1> & align,
         // This assertion ensures that the number of sequence characters after viewPos[i] is greater than or equal to
         // the number of source characters in the clipped infix row.
         // std::cerr << __LINE__ << " >> HOHO infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-        SEQAN_ASSERT_GEQ(endPosition(row(align, i)) - toSourcePosition(row(align, i), viewPos[i]),
+        SEQAN_ASSERT_GEQ(endPosition(row(align, i)) - static_cast<TViewPosition>(toSourcePosition(row(align, i), viewPos[i])),
                          endPosition(infixRow) - beginPosition(infixRow));
 
 		// init iterators

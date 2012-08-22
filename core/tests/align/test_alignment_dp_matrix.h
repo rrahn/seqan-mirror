@@ -304,7 +304,8 @@ void testAlignmentDPMatrixGetIntitialColumnSize()
     SEQAN_ASSERT_EQ(getInitialColumnSize(str0, str1, Band<BandSwitchedOff>()), length(str1) + 1);
     SEQAN_ASSERT_EQ(getInitialColumnSize(str0, str1, Band<BandSwitchedOn<> >(-2,2)), 3u);
     SEQAN_ASSERT_EQ(getInitialColumnSize(str0, str1, Band<BandSwitchedOn<> >(-5,2)), 6u);
-    SEQAN_ASSERT_EQ(getInitialColumnSize(str0, str1, Band<BandSwitchedOn<> >(-76,-28)), 11u);
+    SEQAN_ASSERT_EQ(getInitialColumnSize(str0, str1, Band<BandSwitchedOn<> >(-76,-5)), 6u);
+    SEQAN_ASSERT_EQ(getInitialColumnSize(str0, str1, Band<BandSwitchedOn<> >(-76,-28)), 1u);
     SEQAN_ASSERT_EQ(getInitialColumnSize(str0, str1, Band<BandSwitchedOn<> >(28, 76)), 1u);
 }
 

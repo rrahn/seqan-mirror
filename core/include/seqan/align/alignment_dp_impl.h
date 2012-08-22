@@ -285,6 +285,19 @@ _endWideBand(TSequenceH const & seqH,
 }
 
 // ----------------------------------------------------------------------------
+// Function _beginSmallBandEndPhase()
+// ----------------------------------------------------------------------------
+
+template<typename TSequenceH, typename TSequenceV, typename TBandSpec>
+inline typename Iterator<TSequenceH const>::Type
+_beginSmallBandEndPhase(TSequenceH const & seqH, TSequenceV const & seqV, Band<TBandSpec> const & band)
+{
+    typedef typename Size<Band<TBandSpec> >::Type TSize;
+    return begin(seqH) + _min(static_cast<TSize>(length(seqH)),
+                              _max(0, static_cast<TSize>(length(seqV)) + getUpperDiagonal(band) - 1));
+}
+
+// ----------------------------------------------------------------------------
 // function increment() - conitional increment
 // ----------------------------------------------------------------------------
 
@@ -584,6 +597,58 @@ inline void fillColumn(TTraceTracker & tracker,
                        TTraceIterator & traceIter,
                        TDPIterator & dpIter,
                        TSeqVIterator & seqVIter,
+                       TSeqVIterator const & /*seqVStop*/,
+                       TSeqHValue const & seqHValue,
+                       TDPFormula const & dpFormula,
+                       DPSmallBandDetached const & /*columnManger*/,
+                       DPManager<TAlignProfile, Band<BandSwitchedOn<TBandSpec> > > const & /*dpManager*/)
+{
+        // computing the first cell in banded alignment
+    typedef typename SetUpColumnManager<TAlignProfile, DPSmallBandDetached>::Type TColumnManager;
+    typedef typename IsTracebackOn<TAlignProfile>::Type TIsTracebackOn;
+    typedef typename Value<TDPIterator>::Type TDPValue;
+    typedef Band<BandSwitchedOn<TBandSpec> > TBand;
+
+    TDPValue prevD = value(dpIter);
+    TDPValue prevH;
+    TDPValue prevV;
+    _setInitValue(dpIter, tracker, TBand(), TColumnManager());
+    computeCell(tracker, traceIter, value(dpIter), prevD, prevH, prevV, seqHValue, value(seqVIter), dpFormula,
+                 typename TColumnManager::TFirstCell(), TIsTracebackOn());
+}
+
+template <typename TTraceTracker, typename TTraceIterator, typename TDPIterator, typename TSeqVIterator,
+typename TSeqHValue, typename TDPFormula, typename TAlignProfile,  typename TBandSpec>
+inline void fillColumn(TTraceTracker & tracker,
+                       TTraceIterator & traceIter,
+                       TDPIterator & dpIter,
+                       TSeqVIterator & seqVIter,
+                       TSeqVIterator const & /*seqVStop*/,
+                       TSeqHValue const & seqHValue,
+                       TDPFormula const & dpFormula,
+                       DPSmallBandEnd const & /*columnManger*/,
+                       DPManager<TAlignProfile, Band<BandSwitchedOn<TBandSpec> > > const & /*dpManager*/)
+{
+        // computing the first cell in banded alignment
+    typedef typename SetUpColumnManager<TAlignProfile, DPSmallBandEnd>::Type TColumnManager;
+    typedef typename IsTracebackOn<TAlignProfile>::Type TIsTracebackOn;
+    typedef typename Value<TDPIterator>::Type TDPValue;
+    typedef Band<BandSwitchedOn<TBandSpec> > TBand;
+
+    TDPValue prevD = value(dpIter);
+    TDPValue prevH;
+    TDPValue prevV;
+    _setInitValue(dpIter, tracker, TBand(), TColumnManager());
+    computeCell(tracker, traceIter, value(dpIter), prevD, prevH, prevV, seqHValue, value(seqVIter), dpFormula,
+                 typename TColumnManager::TFirstCell(), TIsTracebackOn());
+}
+
+template <typename TTraceTracker, typename TTraceIterator, typename TDPIterator, typename TSeqVIterator,
+typename TSeqHValue, typename TDPFormula, typename TAlignProfile,  typename TBandSpec>
+inline void fillColumn(TTraceTracker & tracker,
+                       TTraceIterator & traceIter,
+                       TDPIterator & dpIter,
+                       TSeqVIterator & seqVIter,
                        TSeqVIterator const & seqVStop,
                        TSeqHValue const & seqHValue,
                        TDPFormula const & dpFormula,
@@ -642,27 +707,24 @@ inline void fillColumn(TTraceTracker & tracker,
     typedef typename IsTracebackOn<TAlignProfile>::Type TIsTracebackOn;
     typedef typename Value<TDPIterator>::Type TDPValue;
 
-    std::cout << "######## A" << std::endl;
     TDPIterator prevIter = dpIter;
-    std::cout << "######## B" << std::endl;
-    TDPValue prevH = value(++prevIter);
-    std::cout << "######## C" << std::endl;
-    TDPValue prevD = value(dpIter); // invalid read here since it does not point correctly ...
-    std::cout << "######## D" << std::endl;
+    TDPValue prevH;
+    TDPValue prevD;
     TDPValue prevV;
-    std::cout << "######## E" << std::endl;
+    prevH = value(++prevIter);
+    prevD = value(dpIter);
     _setInitValue(dpIter, tracker, TBand(), dpPhase);  // only used within banded chain alignment to set the initialization value determined in the previous DP algorithm.
-    std::cout << "######## F" << std::endl;
+
     computeCell(tracker, traceIter, value(dpIter), prevD, prevH, prevV, seqHValue, value(seqVIter), dpFormula,
                  typename TColumnManager::TFirstCell(), TIsTracebackOn());
-    std::cout << "######## G" << std::endl;
 //    std::cout << value(dpIter) << "\t";
+
     if (seqVIter == seqVStop)  // TODO(rmaerker): What influence does this check has on the runtime?
     {
         return;
     }
+
     ++seqVIter;
-//    std::cout << value(seqVIter) << " ";
     increment(traceIter, TIsTracebackOn());
     while (seqVIter != seqVStop)
     {
@@ -675,7 +737,6 @@ inline void fillColumn(TTraceTracker & tracker,
 //        std::cout << value(dpIter) << "\t";
         increment(traceIter, TIsTracebackOn());
         ++seqVIter;
-//        std::cout << value(seqVIter) << " ";
     }
 
     prevD = prevH;
@@ -685,7 +746,7 @@ inline void fillColumn(TTraceTracker & tracker,
     computeCell(tracker, traceIter, value(dpIter), prevD, prevH, prevV, seqHValue, value(seqVIter), dpFormula,
                  typename TColumnManager::TLastCell(), TIsTracebackOn());
 
-//    std::cout << value(dpIter);
+//    std::cout << value(dpIter) << "\n";
     // Note: that the dpIter always is == end(dpColumn)
 }
 
@@ -731,40 +792,53 @@ inline void fillColumn(TTraceTracker & tracker,
     prevH = value(++dpIter);
     computeCell(tracker, traceIter, value(dpIter), prevD, prevH, prevV, seqHValue, value(seqVIter), dpFormula,
                  typename TColumnManager::TLastCell(), TIsTracebackOn());
-//    std::cout << value(dpIter) << "\n";
 }
 
 // ----------------------------------------------------------------------------
-// function initializeMatrix
+// Function _initializeMatrix()
 // ----------------------------------------------------------------------------
 
 template<typename TTraceTracker, typename TTraceIterator, typename TDPIterator,
-        typename TSeqVIterator, typename TSeqHIterator, typename TDPFormula, typename TDPPhase,
+        typename TSeqVIterator, typename TSeqHIterator, typename TDPFormula, typename TColumnType,
         typename TAlignmentProfile, typename TBand>
-inline void initializeMatrix(TTraceTracker & tracker,
+inline void _initializeMatrix(TTraceTracker & tracker,
         TTraceIterator & traceIter,
         TDPIterator & activeColIter,
         TSeqVIterator const & seqVBegin,
         TSeqHIterator const & seqHIter,
         TDPFormula const & dpFormula,
-        TDPPhase const & dpPhase,
+        TColumnType const & columnType,
         DPManager<TAlignmentProfile, TBand> & dpManager)
 {
+    typedef typename Value<TDPIterator>::Type TDPValue;
+    typedef typename Value<TSeqVIterator>::Type TSeqVValue;
+    typedef typename Value<TSeqHIterator>::Type TSeqHValue;
+    typedef typename SetUpColumnManager<TAlignmentProfile, TColumnType>::Type TColumnManager;
+
+    // Handle special initialization case if seqVBegin and seqVEnd are equal.
+    if (dpManager._spanSeqVBegin == dpManager._spanSeqVEnd)
+    {
+        computeCell(tracker, traceIter, value(activeColIter), TDPValue(), TDPValue(), TDPValue(), TSeqHValue(),
+                    TSeqVValue(), dpFormula, typename TColumnManager::TFirstCell(),
+                    typename IsTracebackOn<TAlignmentProfile>::Type());
+        return;
+    }
+
     TSeqVIterator seqVIter = seqVBegin + dpManager._spanSeqVBegin; // set begin of vertical seq relative to band
     TSeqVIterator seqVStop = seqVBegin + dpManager._spanSeqVEnd;  // set end of vertical sequence relative to band
+
     fillColumn(tracker, traceIter, activeColIter, seqVIter, seqVStop, value(seqHIter), dpFormula,
-               dpPhase, dpManager);
-    std::cout << std::endl;
+               columnType, dpManager);
 }
 
 // ----------------------------------------------------------------------------
-// function fillMatrix
+// Function _fillMatrix()
 // ----------------------------------------------------------------------------
 
 template<typename TTraceTracker, typename TTraceIterator, typename TDPIterator,
         typename TSeqVIterator, typename TSeqHIterator, typename TDPFormula, typename TDPPhase,
         typename TAlignmentProfile, typename TBand>
-inline void fillMatrix(TTraceTracker & tracker,
+inline void _fillMatrix(TTraceTracker & tracker,
         TTraceIterator & traceIter,
         TDPIterator & activeColIter,
         TSeqVIterator const & seqVBegin,
@@ -789,12 +863,11 @@ inline void fillMatrix(TTraceTracker & tracker,
         activeColIter += dpManager._spanDp;
         goBeginNextColumn(tracker, dpManager._spanSeqVBegin, TBand());  // used if tracker needs the correct positions in the grid.
         fillColumn(tracker, traceIter, activeColIter, seqVIter, seqVStop, value(seqHIter), dpFormula, dpPhase, dpManager);
-//        std::cout << value(seqHIter) << "\n";
+//        std::cout << dpManager._spanDp << " ";
 //        for (TDPIterator testIter = activeColIter - 13; testIter != activeColIter; ++testIter)
 //        {
 //            std::cout << value(testIter) << " ";
 //        }
-//        std::cout << std::endl;
     }
 }
 
@@ -852,10 +925,12 @@ void computeDPMatrix(TTraceTracker & tracker,
     TSeqVIterator seqVBegin = begin(seqV);
 
     // DP Matrix
-    TDPMatrix dpMatrix(seqH, seqV, band);  // define the dp matrix given both sequences
+    TDPMatrix dpMatrix(seqH, seqV, band);  // Define the DP matrix given both sequences.
 
     // Column Manager
     TDPManager dpManager(columnSize, initialColumnSize);
+    dpManager._spanSeqVBegin -= _min(0, getUpperDiagonal(band));  // If necessary correct begin position of vertical sequence.
+    dpManager._spanSeqVEnd -= _min(0, getUpperDiagonal(band));  // If necessary correct begin position of vertical sequence.
 
     // DP Iterator
     TDPIterator dpIter = begin(dpMatrix, dpManager);
@@ -866,13 +941,11 @@ void computeDPMatrix(TTraceTracker & tracker,
     // DP Formula
     DPFormula<TScoreScheme, TAlignSpec> dpFormula(scoreScheme);
 
-    std::cout << seqH << std::endl;
     // here we run the recursion but based on the band we set up the columns differently
     if (!_isBandEnabled(band))
     {
-        // case: F, L, O
         //INITIALIZATION
-        initializeMatrix(tracker, traceIter, dpIter, seqVBegin, begin(seqH), dpFormula, DPNoBandInitPhase(),
+        _initializeMatrix(tracker, traceIter, dpIter, seqVBegin, begin(seqH), dpFormula, DPNoBandInitPhase(),
                          dpManager);
 
         //RECURSION
@@ -880,42 +953,52 @@ void computeDPMatrix(TTraceTracker & tracker,
         TSeqHIterator seqHEnd = end(seqH);
 
         // second phase full band or no band
-        fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBegin, seqHEnd, dpFormula,
+        _fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBegin, seqHEnd, dpFormula,
                 DPNoBandPhase(), dpManager);
+    }
+    else if(getBandSize(band) == 1)
+    {
+        _initializeMatrix(tracker, traceIter, dpIter, seqVBegin, begin(seqH), dpFormula, DPSmallBandInit(),
+                         dpManager);
+        TSeqHIterator seqHBeginDetachedPhase = _beginBandFirstPhase(seqH, seqV, band);
+        TSeqHIterator seqHEndPhase = _beginSmallBandEndPhase(seqH, seqV, band);
+        TSeqHIterator seqHEnd = _endBand(seqH, seqV, band);
+
+        _fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBeginDetachedPhase, seqHEndPhase, dpFormula,
+                DPSmallBandDetached(), dpManager);
+
+        _fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHEndPhase, seqHEnd, dpFormula,
+                DPSmallBandEnd(), dpManager);
     }
     else if (!_isWideBand(band, seqH, seqV))
     {
-        // case: A, C, D, E, G, I, J
         //INITIALIZATION
-        // TODO(rmaerker): Check if we need DPNoBandInit...
-
-        initializeMatrix(tracker, traceIter, dpIter, seqVBegin, begin(seqH), dpFormula, DPBandInitPhase(),
+        _initializeMatrix(tracker, traceIter, dpIter, seqVBegin, begin(seqH), dpFormula, DPBandInitPhase(),
                          dpManager);
 
         //RECURSION
-
         TSeqHIterator seqHBeginFirstPhase = _beginBandFirstPhase(seqH, seqV, band); // is begin of seqH
         TSeqHIterator seqHBandedMiddlePhase = _beginBandMiddlePhase(seqH, seqV, band);
         TSeqHIterator seqHBandedLastPhase = _beginBandEndPhase(seqH, seqV, band);
         TSeqHIterator seqHEnd = _endBand(seqH, seqV, band);
 
-        fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBeginFirstPhase, seqHBandedMiddlePhase, dpFormula,
+        _fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBeginFirstPhase, seqHBandedMiddlePhase, dpFormula,
                 DPBandFirstPhase(), dpManager);
 
-        fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBandedMiddlePhase, seqHBandedLastPhase, dpFormula,
+        _fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBandedMiddlePhase, seqHBandedLastPhase, dpFormula,
                 DPBandMiddlePhase(), dpManager);
 
         // not necessarily need to track this. For instance if we are not at the end of the sequence.
         track(tracker, value(dpIter), traceIter, typename IsFreeEndGap<TAlignmentProfile, LastRow>::Type());
 
         _correctSpan(dpManager);
-        fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBandedLastPhase, seqHEnd, dpFormula,
+        _fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBandedLastPhase, seqHEnd, dpFormula,
                 DPBandLastPhase(), dpManager);
     }
     else
-    { // case B, H, K
+    {
         //INITIALIZATION
-        initializeMatrix(tracker, traceIter, dpIter, seqVBegin, begin(seqH), dpFormula, DPWideBandInitPhase(),
+        _initializeMatrix(tracker, traceIter, dpIter, seqVBegin, begin(seqH), dpFormula, DPWideBandInitPhase(),
                          dpManager);
         //RECURSION
 
@@ -924,43 +1007,20 @@ void computeDPMatrix(TTraceTracker & tracker,
         TSeqHIterator seqHBandedLastPhase = _beginWideBandEndPhase(seqH, seqV, band);
         TSeqHIterator seqHEnd = _endWideBand(seqH, seqV, band);
 
-        fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBeginFirstPhase, seqHBandedMiddlePhase, dpFormula,
+        _fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBeginFirstPhase, seqHBandedMiddlePhase, dpFormula,
                 DPWideBandFirstPhase(), dpManager);
-//        std::cout << "After First " << seqHBandedMiddlePhase - begin(seqH) << std::endl;
 
         // TODO(rmaerker): how to track last cell if not enabled...
         track(tracker, value(dpIter), traceIter, typename IsFreeEndGap<TAlignmentProfile, LastRow>::Type());
-//        std::cout << "After Intermed " << seqHBandedMiddlePhase - begin(seqH) << seqHBandedLastPhase1 - begin(seqH) << std::endl;
-        fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBandedMiddlePhase, seqHBandedLastPhase, dpFormula,
+        _fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBandedMiddlePhase, seqHBandedLastPhase, dpFormula,
                 DPWideBandMiddlePhase(), dpManager);
-
-//        std::cout << "After Middle " << seqHBandedLastPhase - begin(seqH) << std::endl;
-
-//        fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBandedLastPhase, seqHBandedLastPhase2, dpFormula,
-//                DPWideBandMiddlePhase(), dpManager);
-//        std::cout << "After Middle " <<  seqHBandedLastPhase2 - begin(seqH) << std::endl;
         _correctSpan(dpManager);
-        fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBandedLastPhase, seqHEnd, dpFormula,
+        _fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHBandedLastPhase, seqHEnd, dpFormula,
                 DPWideBandLastPhase(), dpManager);
-//        std::cout << "After Last " <<  seqHBandedLastPhase - begin(seqH) << " - " << seqHEnd - begin(seqH) << std::endl;
     }
-    // TODO(rmaerker): special case of only one diagonal ....
-
     // We need to scan the last value
     trackLastColumn(tracker, dpIter, (TDPIterator) begin(dpMatrix), traceIter, band,
                     typename IsFreeEndGap<TAlignmentProfile, LastColumn>::Type());
-//
-//    //first phase initialization of the band
-//    fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHIter, seqHStop1, dpFormula,
-//            BandOpenColumn(), dpManager);
-//    // second phase full band or no band
-//    fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHIter, seqHStop2, dpFormula,
-//            FullColumn(), dpManager);
-//    // third phase end of band
-//    fillMatrix(tracker, traceIter, dpIter, seqVBegin, seqHIter, seqHStop3, dpFormula,
-//            BandCloseColumn(), dpManager);
-    // trace back last column and track scores ... either last cell only or last column depending on alignment profile
-
 }
 
 }  // namespace seqan

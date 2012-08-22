@@ -81,6 +81,22 @@
 #include <seqan/seeds2/seeds_seed_set_base.h>
 #include <seqan/seeds2/seeds_seed_set_unordered.h>
 
+
+// ===========================================================================
+// Banded Chain Algorithm
+// ===========================================================================
+
+// Include the standard DP algorithms from the align module.
+#include <seqan/align.h>
+
+// Include the headers for the banded chain algorithm.
+
+#include <seqan/seeds2/banded_chain_alignment.h>
+#include <seqan/seeds2/banded_chain_alignment_tracker.h>
+#include <seqan/seeds2/banded_chain_alignment_traceback.h>
+#include <seqan/seeds2/banded_chain_alignment_impl.h>
+
+// TODO(rmaerker): remove old banded chain alignment algorithm
 // Banded and unbanded DP algorithms.
 #include <seqan/seeds2/align_dynprog_linear.h>
 #include <seqan/seeds2/align_dynprog_banded_linear.h>
